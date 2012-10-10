@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 
 public class SingleTrackActivity extends Activity {
     /** Called when the activity is first created. */
@@ -17,9 +18,7 @@ public class SingleTrackActivity extends Activity {
         
         // Get the level passed from the grid
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-        	Log.d("Counting", "Extras: "+ extras.getString("LEVEL_ID"));
-	        
+        if (extras != null) {	        
         	// Load the level information
 	        int index = Integer.parseInt(extras.getString("LEVEL_ID"));
 	        Levels levels = new Levels();
@@ -32,4 +31,14 @@ public class SingleTrackActivity extends Activity {
 	        setContentView(drawSurfaceView);
         }
     }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // Free up memory by killing activity
+    	if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.android.mcameron.singletrack;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -48,7 +50,10 @@ public class LevelSelectActivity extends Activity {
 		 
 		@Override
 		public int getCount() {
-			return numbers.length;
+			Levels levels = new Levels();
+	        ArrayList<float[]> levelList = levels.getLevels();
+	        
+			return levelList.size() - 1;
 		}
 
 		@Override

@@ -50,7 +50,7 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     private float offsetX = 0;
     private float offsetY = 0;
     
-    private float[] levelConfig; // = new float[]{9,9,1,3,7,5,0,3,1,3,1,2,2,2,2,2,3,2,3,2,4,2,4,1,5,1,5,2,6,2,8,2,7,2,8,3,8,2,8,4,8,3,7,4,6,4,4,4,5,4,5,3,4,3,3,4,4,4,3,5,2,5,1,5,2,5,0,6,1,6,1,7,2,7,3,8,3,7,4,7,4,6,5,8,5,7,6,7,5,7}; //float[]{0,0,6,6,0,0,0,1,6,5,6,6,1,1,2,1,2,1,2,2,2,2,1,2,0,4,0,5,1,5,1,6,2,5,2,6,2,5,3,5,3,5,3,4,4,1,4,2,4,2,4,3,4,3,5,3,5,3,5,4};
+    private float[] levelConfig;
     
     public DrawSurfaceView(Context context) {
         super(context);
@@ -71,14 +71,12 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     @Override
     public void onDraw(Canvas canvas) {
-//    	Log.d("Counting", "dL:"+ Integer.toString(drawnLines.size()));
-//    	Log.d("Counting", "dAFL:"+ Integer.toString(drawnAndFixedLines.size()));
     	Log.d("Counting", "onDraw Scalefactor"+ Float.toString(mScaleFactor));
     	canvas.save();
         //canvas.translate(mX, mY);
         
     	canvas.setMatrix(matrix);
-    	canvas.scale(mScaleFactor, mScaleFactor);
+    	canvas.scale(mScaleFactor, mScaleFactor); //, this.mScaleDetector.getFocusX(), this.mScaleDetector.getFocusY());
     	canvas.drawColor(Color.WHITE);
     	// Fade
     	canvas.drawBitmap(fBitmap, 0, 0, null);
@@ -86,7 +84,7 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     	canvas.drawBitmap(mBitmap, 0, 0, null);
     	// Dots
     	canvas.drawBitmap(iBitmap, 0, 0, null);
-    	Log.d("Counting", "TM: "+ canvas.getMatrix().toString());
+
     	float[] tempArr = new float[9];
         Matrix tMatrix = canvas.getMatrix();
         tMatrix.getValues(tempArr);
@@ -117,8 +115,8 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             mScaleFactor *= (detector.getScaleFactor() - ((detector.getScaleFactor()-1)/1.5));
-            Log.d("Counting", "SL SF"+ String.valueOf(mScaleFactor));
-            Log.d("Counting", "Detector factor"+ detector.getScaleFactor());
+            Log.d("Counting", "SL SF "+ String.valueOf(mScaleFactor));
+            Log.d("Counting", "Detector factor "+ detector.getScaleFactor());
 
             // Don't let the object get too small or too large.
             mScaleFactor = Math.max(0.5f, Math.min(mScaleFactor, 1.0f));
@@ -245,14 +243,26 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
+        float x = event.getX(0);
+        float y = event.getY(0);
 
         mScaleDetector.onTouchEvent(event);
-        
+        //Log.d("Counting", "x: "+ x + " | y: "+ y +" | mX: "+ mX + " | mY: "+ mY +" | mLastTouchX: "+ mLastTouchX +" | mLastTouchY: "+ mLastTouchY);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+        		final float tX = (x / mScaleFactor) - (mX / mScaleFactor) - (offsetX / mScaleFactor);
+        		final float tY = (y / mScaleFactor) - (mY / mScaleFactor) - (offsetY / mScaleFactor) + 19;
+        		Log.d("Counting", "Down: "+ offsetX + " | "+ offsetY +" | "+ mScaleFactor);
+
+        		touchDraw(tX, tY);
+        	
+        		invalidate();
+
+                mLastTouchX = (int) x;
+                mLastTouchY = (int) y;
                 break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+            	break;
             case MotionEvent.ACTION_MOVE:
                 // Only move if the ScaleGestureDetector isn't processing a gesture.
                 if (!mScaleDetector.isInProgress()) {
@@ -274,21 +284,10 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
                 break;
             case MotionEvent.ACTION_UP:
-            	if (!mScaleDetector.isInProgress()) {
-            		final float tX = (x / mScaleFactor) - (mX / mScaleFactor) - (offsetX / mScaleFactor);
-            		final float tY = (y / mScaleFactor) - (mY / mScaleFactor) - (offsetY / mScaleFactor) + 19;
-            		Log.d("Counting", "Down: "+ offsetX + " | "+ offsetY +" | "+ mScaleFactor);
-            	
-            		touchDraw(tX, tY);
-            	
-            		invalidate();
-            	}
-                mLastTouchX = (int) x;
-                mLastTouchY = (int) y;
+            case MotionEvent.ACTION_POINTER_UP:
+
                 break;
-        }
-        
-        
+        }	
 
         return true;
     }

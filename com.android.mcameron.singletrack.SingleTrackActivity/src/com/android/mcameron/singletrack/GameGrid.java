@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 /**
- * @author markcameron
+ * @author Mark Cameron <mark.cameron.dev@gmail.com>
  *
  */
 public class GameGrid {
@@ -33,7 +33,7 @@ public class GameGrid {
     private boolean isFadingLine;
     
 	/**
-     * Initialize a GameGrid with a given size and spacing.
+     * Initialize the GameGrid, setting size, shape, view padding and scaling.
      * 
      * @param gridSize
      * @param gridSpacing
@@ -187,14 +187,12 @@ public class GameGrid {
      * Helper function to initialize the array with all the points for the grid.
      */
 	private void createGrid() {
-//		Log.d("lineFollow","gridSize:" + Integer.toString(gridSize));
-		
 		switch (gridShape) {
-		case GRID_SHAPE_SQUARE:
-		case GRID_SHAPE_RECTANGLE:
-			createGridSquare();
-			setGuideLines();
-			break;
+			case GRID_SHAPE_SQUARE:
+			case GRID_SHAPE_RECTANGLE:
+				createGridSquare();
+				setGuideLines();
+				break;
 		}
 	}
 	
@@ -202,7 +200,7 @@ public class GameGrid {
 	 * Function that will setup the points for a square grid.
 	 */
 	private void createGridSquare() {
-		gridPts = new float[gridSize*2]; //((gridSizeX>=gridSizeY)?gridSizeX:gridSizeY)
+		gridPts = new float[gridSize*2];
 		for (int i = 0; i < gridSizeY; i++) {
         	for (int j = 0; j < gridSizeX; j++) {
         		gridPts[(2*((gridSizeX*i)+j))] = gridPadding+((gridSpacing*j));
@@ -235,7 +233,7 @@ public class GameGrid {
 	
 	/**
 	 * Generates the points for the horizontal and vertical lines that
-	 * make up the dashed background to tell the user where they can press
+	 * make up the dashed background to tell the user where they can touch
 	 */
 	private void setGuideLines() {
 		for (int i = 0; i < gridSizeX; i++) {
@@ -258,7 +256,7 @@ public class GameGrid {
 	}
 	
     /**
-     * Finds the point from which to draw the line
+     * Finds the closest point to where the user touched
      * 
      * @param x
      * @param y
@@ -320,7 +318,7 @@ public class GameGrid {
 	}
     
 	/**
-	 * Finds the closest points to where the user touched
+	 * Finds the 2 points on either side of where the user touched
 	 * 
 	 * @param x
 	 * @param y
@@ -374,6 +372,7 @@ public class GameGrid {
      * Checks if the line will intersect an existing line.
      * 
      * Used to make sure we only draw a single line, not one with branches.
+     * (No T junctions)
      * 
      * @param line
      * 
@@ -382,7 +381,7 @@ public class GameGrid {
     private int isIntersection(float[] line) {
     	int pointOne = countLinesAtPoint(line[0], line[1]);
     	int pointTwo = countLinesAtPoint(line[2], line[3]);
-//    	Log.d("PointOne", pointOne + "|" + pointTwo);
+
     	if ((pointOne == 1) && (pointTwo == 1)) {
 			return 2;	
 		}
@@ -395,6 +394,7 @@ public class GameGrid {
     
     /**
      * Checks if the current point is the Start point
+     * 
      * @param x
      * @param y
      * @return
@@ -410,6 +410,7 @@ public class GameGrid {
     
     /**
      * Checks if the current point is the Finish point
+     * 
      * @param x
      * @param y
      * @return
@@ -426,6 +427,7 @@ public class GameGrid {
     /**
      * Checks if the line being drawn goes to/leaves from
      * either the start or finish points.
+     * 
      * @param line
      * @return
      * TRUE if we do visit start/finish, otherwise FALSE
@@ -487,6 +489,7 @@ public class GameGrid {
     
     /**
      * Checks if the line goes through every point (level solved)
+     * 
      * @return
      * TRUE if the line is complete, FALSE otherwise
      */
@@ -508,6 +511,7 @@ public class GameGrid {
     
     /**
      * Checks if the player has solved the level.
+     * 
      * @return
      * TRUE if the level is solved, FALSE otherwise
      */
@@ -520,6 +524,7 @@ public class GameGrid {
     
     /**
      * Helper function to swap the lines direction (e.g. x1 with x2, and y1 with y2)
+     * 
      * @param line
      * @return
      * The new float array of the swapped line.
@@ -609,6 +614,7 @@ public class GameGrid {
     /**
      * Checks if the line is part of the fixedLine ArrayList, as opposed 
      * to the drawnLine ArrayList.
+     * 
      * @param needle
      * @return
      * TRUE if it is present in the List, otherwise FALSE
@@ -646,7 +652,7 @@ public class GameGrid {
      * 
      * @return TRUE if line was removed, FALSE otherwise
      */
-    public boolean removeLine(float[] line) {
+    public boolean removeLine(float[] line) {	
     	boolean result = deleteLine(line);
     	
     	return result;
