@@ -106,9 +106,10 @@ public class LevelSelectActivity extends Activity {
 	    		this.position = position;  
 	    	}
   
-	    	public void onClick(View v) {  
+	    	@Override
+			public void onClick(View v) {  
 	    		// Open the level corresponding to the level selected in the GridView
-	    		Intent StartGameIntent = new Intent(LevelSelectActivity.this, SingleTrackActivity.class);
+	    		Intent StartGameIntent = new Intent(LevelSelectActivity.this, Options.class);
 				StartGameIntent.putExtra("LEVEL_ID", numbers[position]);
         		startActivity(StartGameIntent);
 	    	}  

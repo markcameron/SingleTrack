@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import android.util.Log;
-
 /**
  * @author Mark Cameron <mark.cameron.dev@gmail.com>
  *
  */
-public class GameGrid {
+public class CopyOfGameGrid {
 	ArrayList <float[]>drawnLines = new ArrayList<float[]>();
 	ArrayList <float[]>fixedLines = new ArrayList<float[]>();
 	ArrayList <float[]>guideLines = new ArrayList<float[]>();
@@ -20,9 +18,7 @@ public class GameGrid {
     private float[] startPoint = new float[2];
     private float[] endPoint = new float[2];
     private float[] closestPoints = new float[4];
-    
-    private int[] bitmapDimensions = new int[2];
-    
+
 	private int gridSize;
 	private int gridSizeX;
 	private int gridSizeY;
@@ -33,7 +29,6 @@ public class GameGrid {
     private static final int GRID_SHAPE_TRIANGLE  = 1;
     private static final int GRID_SHAPE_SQUARE    = 2;
     private static final int GRID_SHAPE_RECTANGLE = 3;
-    private static final int GRID_SCALE_FACTOR    = 1;
     
     private boolean isFadingLine;
     
@@ -43,14 +38,13 @@ public class GameGrid {
      * @param gridSize
      * @param gridSpacing
      */
-    GameGrid(int gridShape, int displayWidth, int displayHeight, int screenDPI, float[] levelConfig) {
+    CopyOfGameGrid(int gridShape, int displayWidth, int displayHeight, float[] levelConfig) {
     	setGridSizeX((int)levelConfig[0]);
     	setGridSizeY((int)levelConfig[1]);
     	setGridPadding(displayWidth, displayHeight);
     	setGridSize(gridSizeX, gridSizeY);
     	setGridShape(gridShape);
-    	setGridSpacing(screenDPI);
-    	setBitmapDimensions();
+    	setGridSpacing(displayWidth, displayHeight);
     	setFadingLine(false);
     	createGrid();
     	setupLevel(levelConfig);
@@ -120,7 +114,7 @@ public class GameGrid {
 	}
 
 	public void setGridPadding(int width, int height) {
-		int gridPadding = (int)(width*0.1)/2;
+		int gridPadding = (int)(width*0.2)/2;
 		this.gridPadding = gridPadding;
 	}
 
@@ -168,22 +162,18 @@ public class GameGrid {
 		return gridSpacing;
 	}
 
-	public void setGridSpacing(int screenDPI) {
-		this.gridSpacing = (screenDPI/3) * GRID_SCALE_FACTOR;
+	public void setGridSpacing(int width, int height) {
+		if (gridSizeX >= gridSizeY) {
+			this.gridSpacing = (width-gridPadding*2)/(gridSizeX-1);
+		}
+		else {
+			this.gridSpacing = (height-gridPadding*2)/(gridSizeY-1);
+		}
 	}
 	
     public float[] getClosestPoints() {
 		return closestPoints;
 	}
-    
-    public void setBitmapDimensions() {
-    	this.bitmapDimensions[0] = (this.gridPadding * 2) + ((this.gridSizeX-1) * this.gridSpacing);
-    	this.bitmapDimensions[1] = (this.gridPadding * 2) + ((this.gridSizeY-1) * this.gridSpacing);
-    }
-    
-    public int[] getBitmapDimensions() {
-    	return bitmapDimensions;
-    }
     
     public boolean isFadingLine() {
 		return isFadingLine;

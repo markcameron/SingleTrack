@@ -5,7 +5,6 @@ import com.android.mcameron.singletrack.DrawSurfaceView;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 
 public class SingleTrackActivity extends Activity {
@@ -27,9 +26,21 @@ public class SingleTrackActivity extends Activity {
 	        // Draw and setup level
 	        drawSurfaceView = new DrawSurfaceView(this);
 	        drawSurfaceView.setLevel(level);
-	        drawSurfaceView.setBackgroundColor(Color.WHITE);
+//	        drawSurfaceView.setBackgroundColor(Color.WHITE);
 	        setContentView(drawSurfaceView);
         }
+    }
+    
+    @Override
+    public void onPause() {
+    	super.onPause();
+    	drawSurfaceView.pause();
+    }
+   
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	drawSurfaceView.resume();
     }
     
     @Override

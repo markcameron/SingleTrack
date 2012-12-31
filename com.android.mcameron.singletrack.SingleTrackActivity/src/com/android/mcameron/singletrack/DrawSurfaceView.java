@@ -19,8 +19,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.util.ArrayList;
 
-public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
-	private TutorialThread _thread;
+public class DrawSurfaceView extends SurfaceView implements Runnable {
 	
 	private static final int FADE_ALPHA = 0x06;
 	private static final int MAX_FADE_STEPS = 256/FADE_ALPHA + 4;
@@ -29,12 +28,12 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private int mFadeSteps = MAX_FADE_STEPS;
 	
 	private final Paint paint = new Paint();
-    private final Paint mFadePaint;
+//    private final Paint mFadePaint;
 
     GameGrid gameGrid;
     
     private ScaleGestureDetector mScaleDetector;
-    private float mScaleFactor = 0.5f;
+    private float mScaleFactor;
     
     private Matrix matrix;
     
@@ -52,25 +51,112 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     
     private float[] levelConfig;
     
+	private SurfaceHolder surfaceHolder;
+	private Thread gameThread = null;
+	
+	private boolean gameIsRunning = false;
+    
     public DrawSurfaceView(Context context) {
         super(context);
-        getHolder().addCallback(this);
-        _thread = new TutorialThread(getHolder(), this);
+        
+        // Setup thread
+        surfaceHolder = getHolder();
         
         paint.setAntiAlias(true);
         paint.setStrokeWidth(6*LEVEL_SCALE);
         
-        mFadePaint = new Paint();
-        mFadePaint.setDither(true);
-        mFadePaint.setARGB(FADE_ALPHA, 0, 0, 0);
+//        mFadePaint = new Paint();
+//        mFadePaint.setDither(true);
+//        mFadePaint.setARGB(FADE_ALPHA, 0, 0, 0);
         
         mX = mY = mLastTouchX = mLastTouchY = 0;
         
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        mScaleFactor = 1f;
+    }
+    
+	public void pause() {
+		gameIsRunning = false;
+		while (true) {
+			try {
+				gameThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		}
+		
+		gameThread = null;
+	}
+    
+    public void resume() {
+    	gameIsRunning = true;
+    	gameThread = new Thread(this);
+    	gameThread.start();
+//        gameThread = new Thread(this);
+//        startGame();
+    }
+    
+    @Override
+	public void run() {
+    	while (gameIsRunning) {
+			if (!surfaceHolder.getSurface().isValid()) {
+				continue;
+			}  
+			
+
+			
+			// TODO Auto-generated method stub
+	    	Canvas canvas = surfaceHolder.lockCanvas();
+	    	
+//	    	canvas.save();
+	        //canvas.translate(mX, mY);
+	        
+//	    	canvas.setMatrix(matrix);
+	    	canvas.scale(mScaleFactor, mScaleFactor); //, this.mScaleDetector.getFocusX(), this.mScaleDetector.getFocusY());
+	    	canvas.drawColor(Color.WHITE);
+	    	// Fade
+	    	canvas.drawBitmap(fBitmap, 0, 0, null);
+	    	// Lines
+	    	canvas.drawBitmap(mBitmap, 0, 0, null);
+	    	// Dots
+	    	canvas.drawBitmap(iBitmap, 0, 0, null);
+	
+	    	float[] tempArr = new float[9];
+	        Matrix tMatrix = canvas.getMatrix();
+	        tMatrix.getValues(tempArr);
+	        offsetX = tempArr[2];
+	        offsetY = tempArr[5];
+//	    	canvas.restore();
+//			Log.d("Counting", "onDraw Scalefactor Before"+ Float.toString(mScaleFactor));
+			try {
+				Thread.sleep(16);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+//			Log.d("Counting", "onDraw Scalefactor After 5"+ Float.toString(mScaleFactor));
+			
+			surfaceHolder.unlockCanvasAndPost(canvas);
+
+    	}
+	}
+    
+    public void startGame() {
+    	if (!gameIsRunning) {
+    		gameThread.start();
+    		gameIsRunning = true;
+    	}
+    	else {
+    		gameThread.resume();
+    	}
     }
 
     @Override
     public void onDraw(Canvas canvas) {
+    	Log.d("Counting", "onDraw");
+/*
     	Log.d("Counting", "onDraw Scalefactor"+ Float.toString(mScaleFactor));
     	canvas.save();
         //canvas.translate(mX, mY);
@@ -91,8 +177,7 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         offsetX = tempArr[2];
         offsetY = tempArr[5];
     	canvas.restore();
-    	
-    	
+    	*/
     	
 //    	if (gameGrid.isFadingLine()) {
 //			try {
@@ -121,9 +206,9 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             // Don't let the object get too small or too large.
             mScaleFactor = Math.max(0.5f, Math.min(mScaleFactor, 1.0f));
 //            mScaleFactor = Math.max(1.f, Math.min(mScaleFactor, 2.0f));
-            rebound();
+//            rebound();
             
-            invalidate();
+//            invalidate();
             return true;
         }
     }
@@ -137,9 +222,9 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         h = h*LEVEL_SCALE;
         drawW = w;
         drawH = h;
-        
+
         if (mCanvas == null) {
-        	gameGrid = new GameGrid(2, w, h, levelConfig);
+        	gameGrid = new GameGrid(2, w, h, 320, levelConfig);
         	
 	        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
 	        mCanvas = new Canvas(mBitmap);
@@ -158,35 +243,11 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	        drawCircles(gameGrid.getmPts(), paint.getStrokeWidth(), initCanvas, paint);
 	        drawInitialLines(initCanvas, gameGrid.getFixedLinesArray());
 	        drawStartFinish(initCanvas, gameGrid.getStartPoint(), gameGrid.getEndPoint());
+	        
+//	        resume();
         }
     }
-    
-	@Override
-	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void surfaceCreated(SurfaceHolder arg0) {
-//		_thread.setRunning(true);
-//	    _thread.start();		
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder arg0) {
-		boolean retry = true;
-        _thread.setRunning(false);
-        while (retry) {
-            try {
-                _thread.join();
-                retry = false;
-            } catch (InterruptedException e) {
-                // we will try it again and again...
-            }
-        }
-	}
-	
 	public void rebound() {
 	    // make a rectangle representing what our current canvas looks like
 	    RectF currentBounds = new RectF(0, 0, drawW * mScaleFactor, drawH * mScaleFactor);
@@ -246,7 +307,7 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         float x = event.getX(0);
         float y = event.getY(0);
 
-        mScaleDetector.onTouchEvent(event);
+//        mScaleDetector.onTouchEvent(event);
         //Log.d("Counting", "x: "+ x + " | y: "+ y +" | mX: "+ mX + " | mY: "+ mY +" | mLastTouchX: "+ mLastTouchX +" | mLastTouchY: "+ mLastTouchY);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -256,7 +317,7 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
         		touchDraw(tX, tY);
         	
-        		invalidate();
+        		//invalidate();
 
                 mLastTouchX = (int) x;
                 mLastTouchY = (int) y;
@@ -265,7 +326,7 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             	break;
             case MotionEvent.ACTION_MOVE:
                 // Only move if the ScaleGestureDetector isn't processing a gesture.
-                if (!mScaleDetector.isInProgress()) {
+//                if (!mScaleDetector.isInProgress()) {
                     final float dx = x - mLastTouchX;
                     final float dy = y - mLastTouchY;
                     
@@ -275,9 +336,9 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                     Log.d("Counting", "Move:"+ mX + " | "+ mY +" | "+ mScaleFactor);
                     mX = mY = 1;
                     
-                    rebound();
-                    invalidate();
-                }
+//                    rebound();
+                    //invalidate();
+//                }
 
                 mLastTouchX = (int) x;
                 mLastTouchY = (int) y;
@@ -293,8 +354,8 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     }
     
     public void changeOpacity() {
-    	fBitmap.eraseColor(Color.TRANSPARENT);
-    	gameGrid.setFadingLine(false);
+//    	fBitmap.eraseColor(Color.TRANSPARENT);
+//    	gameGrid.setFadingLine(false);
     }
 	
     public void drawDottedGrid(Canvas canvas, float[] lines) {
@@ -383,42 +444,6 @@ public class DrawSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     
     public void setLevel(float[] level) {
     	levelConfig = level;
-    }
-	
-	class TutorialThread extends Thread {
-        private SurfaceHolder _surfaceHolder;
-        private DrawSurfaceView _panel;
-        private boolean _run = false;
- 
-        public TutorialThread(SurfaceHolder surfaceHolder, DrawSurfaceView panel) {
-            _surfaceHolder = surfaceHolder;
-            _panel = panel;
-        }
- 
-        public void setRunning(boolean run) {
-            _run = run;
-        }
- 
-        @Override
-        public void run() {
-            Canvas c;
-            while (_run) {
-                c = null;
-                try {
-                    c = _surfaceHolder.lockCanvas(null);
-                    synchronized (_surfaceHolder) {
-                        _panel.onDraw(c);
-                    }
-                } finally {
-                    // do this in a finally so that if an exception is thrown
-                    // during the above, we don't leave the Surface in an
-                    // inconsistent state
-                    if (c != null) {
-                        _surfaceHolder.unlockCanvasAndPost(c);
-                    }
-                }
-            }
-        }
     }
 	
 }

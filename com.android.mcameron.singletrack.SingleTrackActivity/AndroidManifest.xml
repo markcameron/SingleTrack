@@ -22,9 +22,13 @@
 		    android:screenOrientation="portrait"
             	android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 		</activity>
-		       <activity android:name=".Help">
+		       <activity android:name=".Help"
+		           		 android:screenOrientation="portrait"
+            			 android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 		</activity>
-		       <activity android:name=".Options">
+		       <activity android:name=".Options"
+		           android:screenOrientation="portrait"
+            	android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 		</activity>
 		       <activity android:name=".Credits">
 		</activity>
