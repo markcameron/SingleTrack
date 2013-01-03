@@ -111,6 +111,8 @@ public class LevelSelectActivity extends Activity {
 	    		// Open the level corresponding to the level selected in the GridView
 	    		Intent StartGameIntent = new Intent(LevelSelectActivity.this, Options.class);
 				StartGameIntent.putExtra("LEVEL_ID", numbers[position]);
+				Globals globals = (Globals) getApplicationContext();
+				globals.setCurrentLevel(numbers[position]);
         		startActivity(StartGameIntent);
 	    	}  
 	    }  

@@ -3,7 +3,9 @@ package com.android.mcameron.singletrack;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -23,7 +25,11 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class Options extends Activity implements OnTouchListener {
     /** Called when the activity is first created. */
@@ -38,6 +44,8 @@ public class Options extends Activity implements OnTouchListener {
     
     private boolean isDrag = false;
     
+    private int numberOfMoves;
+    
     private static final int INVALID_POINTER_ID = -1;
 
     // The ‘active pointer’ is the one currently moving our object.
@@ -48,13 +56,18 @@ public class Options extends Activity implements OnTouchListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        // Get the level passed from the grid
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {	        
-        	// Load the level information
-	        int index = Integer.parseInt(extras.getString("LEVEL_ID"));
-	        Levels levels = new Levels();
-	        float[] level = levels.getLevel(index);
+        // Get the selected level from the Global settings
+        Globals globals = (Globals) getApplicationContext();
+        Levels levels = new Levels();
+        float[] level = levels.getLevel(Integer.parseInt(globals.getCurrentLevel()));
+        
+//        // Get the level passed from the grid
+//        Bundle extras = getIntent().getExtras();
+//        if (extras != null) {	        
+//        	// Load the level information
+//	        int index = Integer.parseInt(extras.getString("LEVEL_ID"));
+//	        Levels levels = new Levels();
+//	        float[] level = levels.getLevel(index);
 	        
 	        // Draw and setup level
 	        testSurfaceView = new TestSurfaceView(this);
@@ -62,12 +75,14 @@ public class Options extends Activity implements OnTouchListener {
 //	        testSurfaceView.setBackgroundColor(Color.WHITE);
 	        testSurfaceView.setOnTouchListener(this);
 	        setContentView(testSurfaceView);
-        }
-        else {
-        	testSurfaceView = new TestSurfaceView(this);
-        	testSurfaceView.setOnTouchListener(this);
-        	setContentView(testSurfaceView);
-        }
+//        }
+//        else {
+//        	testSurfaceView = new TestSurfaceView(this);
+//        	testSurfaceView.setOnTouchListener(this);
+//        	setContentView(testSurfaceView);
+//        }
+        
+        numberOfMoves = 0;
     }
     
     @Override
@@ -509,7 +524,7 @@ public class Options extends Activity implements OnTouchListener {
 	    	gameGrid.findClosestPoints(x, y);
 	        float[] line = gameGrid.getClosestPoints();
 	        
-	        ArrayList<float[]> temp = gameGrid.getDrawnLines();
+//	        ArrayList<float[]> temp = gameGrid.getDrawnLines();
 	        paint.setTextSize(24);
 	        
 	        // Do nothing if it's a fixed line
@@ -522,18 +537,14 @@ public class Options extends Activity implements OnTouchListener {
 			}
 	        
 	        if (gameGrid.isAlreadyDrawn(line)) {
-	        	gameGrid.removeLine(line);
-	        	Xfermode originalXfermode = paint.getXfermode();
-				paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-		        //paint.setColor(Color.WHITE);
-		        mCanvas.drawLines(line, paint);
-		        paint.setXfermode(originalXfermode);
+	        	deleteLineValid(line);
+		        numberOfMoves++;
 	        }
 	        else {
 	        	if (gameGrid.canBeDrawn(line)) {
-	        		gameGrid.addLine(line);
-	            	paint.setColor(Color.rgb(92,172,238));	        
-	    	        mCanvas.drawLines(line, paint);
+	        		drawLineValid(line);
+	    	        numberOfMoves++;
+	        		checkIfLevelIsSolved();
 				}
 	        	else {
 	        		paint.setAlpha(100);
@@ -542,13 +553,68 @@ public class Options extends Activity implements OnTouchListener {
 	    	        gameGrid.setFadingLine(true);
 	        	}
 	        }
-	        
+	    }
+	    
+	    private void drawLineValid(float[] line) {
+	    	gameGrid.addLine(line);
+        	paint.setColor(Color.rgb(92,172,238));	        
+	        mCanvas.drawLines(line, paint);
+	    }
+	    
+	    private void deleteLineValid(float[] line) {
+        	gameGrid.removeLine(line);
+        	Xfermode originalXfermode = paint.getXfermode();
+			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+	        //paint.setColor(Color.WHITE);
+	        mCanvas.drawLines(line, paint);
+	        paint.setXfermode(originalXfermode);
+	    }
+	    
+	    private void checkIfLevelIsSolved() {
 	        if (gameGrid.levelIsSolved()) {
-	        	paint.setColor(Color.RED);
-	            String positions = "Level Complete!";
-	            mCanvas.drawText(positions, 100, 500, paint);
-	            Log.d("Counting", "Level Complete");
+	        	showLevelCompletePopup();
 			} 
+	    }
+	    
+	    public void showLevelCompletePopup() {
+	    	Dialog dialog;
+	    	// Set the Theme depending on the API version so we have Holo for 4.X.X
+	    	int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+	    	if (currentapiVersion < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+	    		dialog = new Dialog(this.getContext(), R.style.Theme_CustomDialog);
+	    	} else{
+	    		dialog = new Dialog(this.getContext(), R.style.Theme_CustomDialogHolo);
+	    	}
+        	
+    		dialog.setContentView(R.layout.levelcompleteoverlay);
+    		dialog.getWindow().getAttributes().width = LayoutParams.FILL_PARENT;
+    		dialog.setTitle(R.string.levelcomplete);
+    		dialog.setCanceledOnTouchOutside(false);
+
+    		// Set the number of moves
+    		TextView textViewTableNumberOfMovesValue = (TextView) dialog.findViewById(R.id.textViewTableNumberOfMovesValue);
+    		textViewTableNumberOfMovesValue.setText(Integer.toString(numberOfMoves));
+    		
+    		setupButtonNextLevel(dialog);
+    		
+    		dialog.show();
+	    }
+	    
+	    private void setupButtonNextLevel(final Dialog dialog) {
+	        Button buttonNextLevel = (Button) dialog.findViewById(R.id.btnNextLevel);
+	        buttonNextLevel.setOnClickListener(new OnClickListener() {
+	        	
+	        	@Override
+				public void onClick(View v) {
+	        		Globals globals = (Globals) getApplicationContext();
+					String NextLevel = globals.getNextLevel();
+
+
+	        		recreate();
+	        		dialog.dismiss();
+//	        		startActivity(intent);
+	        	}
+	        });
 	    }
 	    
 	    public void drawDottedGrid(Canvas canvas, float[] lines) {

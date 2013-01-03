@@ -49,7 +49,7 @@ public class Menu extends Activity {
         	
         	@Override
 			public void onClick(View v) {
-        		Intent CreditsIntent= new Intent(Menu.this,Credits.class);
+        		Intent CreditsIntent= new Intent(Menu.this, Credits.class);
         		startActivity(CreditsIntent);
         	}
         });
