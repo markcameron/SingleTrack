@@ -13,9 +13,10 @@ public final class R {
     public static final class drawable {
         public static final int background=0x7f020000;
         public static final int btn_black=0x7f020001;
-        public static final int filled_box=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
-        public static final int icon=0x7f020004;
+        public static final int btn_blue=0x7f020002;
+        public static final int filled_box=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int icon=0x7f020005;
     }
     public static final class id {
         public static final int Credits=0x7f06000d;
@@ -25,7 +26,7 @@ public final class R {
         public static final int Options=0x7f06000c;
         public static final int StartGame=0x7f06000a;
         public static final int TextView01=0x7f060001;
-        public static final int btnBackToMainMenu=0x7f060007;
+        public static final int btnBackToLevelSelect=0x7f060007;
         public static final int btnNextLevel=0x7f060008;
         public static final int grid=0x7f060009;
         public static final int tableRow1=0x7f060003;

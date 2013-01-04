@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -68,10 +69,10 @@ public class LevelSelectActivity extends Activity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Button btn;  
+			MenuButton btn;  
 			if (convertView == null) {  
 				// if it's not recycled, initialize some attributes  
-				btn = new Button(mContext);  
+				btn = new MenuButton(mContext);  
 				// Set the font face because I cannot pass it to the Button constructor
 				btn.setTextSize(30f);
 				btn.setGravity(0x11);
@@ -79,12 +80,20 @@ public class LevelSelectActivity extends Activity {
 				btn.setTypeface(null, Typeface.BOLD);
 			}  
 			else {  
-				btn = (Button) convertView;  
+				btn = (MenuButton) convertView;  
 			}  
+
+			AppPreferences appPrefs = new AppPreferences(mContext);
+			int levelState = appPrefs.getLevelState("01", String.format("%02d", position + 1));
+//			Log.d("Counting", Integer.toString(position) +" | "+ Integer.toString(levelState));
+			
+			if (position > 1) {
+				btn.setEnabledFromLevelState(levelState);
+			}
 
 			btn.setText(numbers[position]);
 			// Set the button to use my custom black background
-			btn.setBackgroundResource(R.drawable.btn_black);  
+			btn.setBackgroundResourceFromLevelState(levelState);
 			btn.setId(position);
 			
 		    // Set the onclicklistener so that pressing the button fires an event  

@@ -61,26 +61,12 @@ public class Options extends Activity implements OnTouchListener {
         Levels levels = new Levels();
         float[] level = levels.getLevel(Integer.parseInt(globals.getCurrentLevel()));
         
-//        // Get the level passed from the grid
-//        Bundle extras = getIntent().getExtras();
-//        if (extras != null) {	        
-//        	// Load the level information
-//	        int index = Integer.parseInt(extras.getString("LEVEL_ID"));
-//	        Levels levels = new Levels();
-//	        float[] level = levels.getLevel(index);
-	        
-	        // Draw and setup level
-	        testSurfaceView = new TestSurfaceView(this);
-	        testSurfaceView.setLevel(level);
-//	        testSurfaceView.setBackgroundColor(Color.WHITE);
-	        testSurfaceView.setOnTouchListener(this);
-	        setContentView(testSurfaceView);
-//        }
-//        else {
-//        	testSurfaceView = new TestSurfaceView(this);
-//        	testSurfaceView.setOnTouchListener(this);
-//        	setContentView(testSurfaceView);
-//        }
+        // Draw and setup level
+        testSurfaceView = new TestSurfaceView(this);
+        testSurfaceView.setLevel(level);
+//	    testSurfaceView.setBackgroundColor(Color.WHITE);
+        testSurfaceView.setOnTouchListener(this);
+        setContentView(testSurfaceView);
         
         numberOfMoves = 0;
     }
@@ -572,12 +558,32 @@ public class Options extends Activity implements OnTouchListener {
 	    
 	    private void checkIfLevelIsSolved() {
 	        if (gameGrid.levelIsSolved()) {
+	        	setLevelState(2);
+	        	unlockLevel();
 	        	showLevelCompletePopup();
 			} 
 	    }
 	    
+	    private void setLevelState(int levelState) {
+	    	AppPreferences appPrefs = new AppPreferences(getContext());
+	    	Globals globals = (Globals) getApplicationContext();
+	    	
+	    	String currentLevel = globals.getCurrentLevel();
+//	    	Log.d("Counting", "Curr Level: "+ String.format("%02d", Integer.parseInt(currentLevel)));
+	    	appPrefs.setLevelState("01", String.format("%02d", Integer.parseInt(currentLevel)), levelState);
+	    }
+	    
+	    private void unlockLevel() {
+	    	AppPreferences appPrefs = new AppPreferences(getContext());
+	    	Globals globals = (Globals) getApplicationContext();
+	    	
+	    	int currentLevel = Integer.parseInt(globals.getCurrentLevel());
+	    	appPrefs.setLevelState("01", String.format("%02d", (currentLevel + 2)), globals.LEVEL_ENABLED);
+	    }
+	    
 	    public void showLevelCompletePopup() {
 	    	Dialog dialog;
+	    	
 	    	// Set the Theme depending on the API version so we have Holo for 4.X.X
 	    	int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 	    	if (currentapiVersion < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH){
@@ -586,6 +592,7 @@ public class Options extends Activity implements OnTouchListener {
 	    		dialog = new Dialog(this.getContext(), R.style.Theme_CustomDialogHolo);
 	    	}
         	
+	    	// Setup dialog properties
     		dialog.setContentView(R.layout.levelcompleteoverlay);
     		dialog.getWindow().getAttributes().width = LayoutParams.FILL_PARENT;
     		dialog.setTitle(R.string.levelcomplete);
@@ -595,7 +602,9 @@ public class Options extends Activity implements OnTouchListener {
     		TextView textViewTableNumberOfMovesValue = (TextView) dialog.findViewById(R.id.textViewTableNumberOfMovesValue);
     		textViewTableNumberOfMovesValue.setText(Integer.toString(numberOfMoves));
     		
+    		// Make the Next Level button clickable
     		setupButtonNextLevel(dialog);
+    		setupButtonBackToLevelSelect(dialog);
     		
     		dialog.show();
 	    }
@@ -607,12 +616,24 @@ public class Options extends Activity implements OnTouchListener {
 	        	@Override
 				public void onClick(View v) {
 	        		Globals globals = (Globals) getApplicationContext();
-					String NextLevel = globals.getNextLevel();
+					globals.setNextLevel();
 
-
-	        		recreate();
+					Intent currentIntent = (Intent) getIntent();
+					finish();
+	        		startActivity(currentIntent);
 	        		dialog.dismiss();
-//	        		startActivity(intent);
+	        	}
+	        });
+	    }
+	    
+	    private void setupButtonBackToLevelSelect(final Dialog dialog) {
+	        Button btnBackToMainMenu = (Button) dialog.findViewById(R.id.btnBackToLevelSelect);
+	        btnBackToMainMenu.setOnClickListener(new OnClickListener() {
+	        	
+	        	@Override
+				public void onClick(View v) {
+	        		finish();
+	        		dialog.dismiss();
 	        	}
 	        });
 	    }
