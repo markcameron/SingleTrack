@@ -24,4 +24,8 @@ public class AppPreferences {
 	 public void setLevelState(String levelPack, String levelNumber, int levelState) {
 		 prefsEditor.putInt(levelPack + levelNumber, levelState).commit();
 	 }
+	 
+	 public void clear() {
+		 prefsEditor.clear().commit();
+	 }
 }

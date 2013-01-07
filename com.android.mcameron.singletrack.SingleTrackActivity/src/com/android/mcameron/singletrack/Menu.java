@@ -29,8 +29,10 @@ public class Menu extends Activity {
         	
         	@Override
 			public void onClick(View v) {
-        		Intent HelpIntent = new Intent(Menu.this,Help.class);
-        		startActivity(HelpIntent);
+//        		Intent HelpIntent = new Intent(Menu.this,Help.class);
+//        		startActivity(HelpIntent);
+        		AppPreferences appPrefs = new AppPreferences(getBaseContext());
+        		appPrefs.clear();
         	}
         });
         

@@ -124,7 +124,14 @@ public class LevelSelectActivity extends Activity {
 				globals.setCurrentLevel(numbers[position]);
         		startActivity(StartGameIntent);
 	    	}  
-	    }  
+	    }
+	}
+	
+	public void onRestart() {
+		super.onRestart();
+		Intent currentIntent = (Intent) getIntent();
+		finish();
+		startActivity(currentIntent);
 	}
 
 }// class
