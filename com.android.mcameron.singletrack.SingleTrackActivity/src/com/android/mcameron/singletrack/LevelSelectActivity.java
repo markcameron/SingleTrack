@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 
 public class LevelSelectActivity extends Activity {
@@ -25,14 +24,24 @@ public class LevelSelectActivity extends Activity {
 			"11", "12", "13", "14", "15",
 			"16", "17", "18", "19", "20"};
 	
+	private String levelPack;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	
 		setContentView(R.layout.levelselect);
+		
+		// Get the level pack that is passed to the activity
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			levelPack = extras.getString("PACK_ID");
+		}
+		else {
+			levelPack = "01";
+		}
 	
 		gridView = (GridView) findViewById(R.id.grid);
-	
 		gridView.setAdapter(new ButtonAdapter(this));	
 	}
 	
@@ -52,7 +61,8 @@ public class LevelSelectActivity extends Activity {
 		@Override
 		public int getCount() {
 			Levels levels = new Levels();
-	        ArrayList<float[]> levelList = levels.getLevels();
+			levels.setLevelPack(levelPack);
+			ArrayList<float[]> levelList = levels.getLevels();
 	        
 			return levelList.size() - 1;
 		}
@@ -83,8 +93,10 @@ public class LevelSelectActivity extends Activity {
 				btn = (MenuButton) convertView;  
 			}  
 
+			Globals globals = (Globals) getApplicationContext();
 			AppPreferences appPrefs = new AppPreferences(mContext);
-			int levelState = appPrefs.getLevelState("01", String.format("%02d", position + 1));
+			Log.d("Counting", "current pack: "+ globals.getCurrentPack());
+			int levelState = appPrefs.getLevelState(globals.getCurrentPack(), String.format("%02d", position + 1));
 //			Log.d("Counting", Integer.toString(position) +" | "+ Integer.toString(levelState));
 			
 			if (position > 1) {

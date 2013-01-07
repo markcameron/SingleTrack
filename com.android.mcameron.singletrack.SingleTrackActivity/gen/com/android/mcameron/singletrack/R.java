@@ -24,6 +24,8 @@ public final class R {
         public static final int LinearLayout02=0x7f060006;
         public static final int LinearLayoutLevelCompleteDialog=0x7f060002;
         public static final int Options=0x7f06000c;
+        public static final int PackRectangles=0x7f06000f;
+        public static final int PackSquares=0x7f06000e;
         public static final int StartGame=0x7f06000a;
         public static final int TextView01=0x7f060001;
         public static final int btnBackToLevelSelect=0x7f060007;
@@ -41,7 +43,8 @@ public final class R {
         public static final int levelselect=0x7f030003;
         public static final int main=0x7f030004;
         public static final int options=0x7f030005;
-        public static final int startgame=0x7f030006;
+        public static final int packselect=0x7f030006;
+        public static final int startgame=0x7f030007;
     }
     public static final class string {
         public static final int app_name=0x7f040001;
@@ -50,14 +53,16 @@ public final class R {
         public static final int main_menu=0x7f040003;
         public static final int next_level=0x7f040004;
         public static final int number_of_moves=0x7f040005;
+        public static final int rectangles=0x7f040007;
+        public static final int squares=0x7f040006;
     }
     public static final class style {
-        public static final int ButtonText=0x7f050000;
-        public static final int CustomDialogTitle=0x7f050003;
-        public static final int DialogTableText=0x7f050004;
+        public static final int ButtonText=0x7f050004;
+        public static final int CustomDialogTitle=0x7f050002;
+        public static final int DialogTableText=0x7f050003;
         /**  A theme for a custom dialog appearance. 
          */
-        public static final int Theme_CustomDialog=0x7f050001;
-        public static final int Theme_CustomDialogHolo=0x7f050002;
+        public static final int Theme_CustomDialog=0x7f050000;
+        public static final int Theme_CustomDialogHolo=0x7f050001;
     }
 }

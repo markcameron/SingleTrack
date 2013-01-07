@@ -18,10 +18,8 @@ public class MenuButton extends Button {
 	}
 	
 	public void setBackgroundResourceFromLevelState(int levelState) {
-		Log.d("Counting", "Level State: "+ Integer.toString(levelState));
 		switch (levelState) {
 			case 2:
-				Log.d("Counting", "Blue state please");
 				this.setBackgroundResource(R.drawable.btn_blue);
 				break;
 		    default:

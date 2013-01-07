@@ -41,7 +41,7 @@ public class Menu extends Activity {
         	
         	@Override
 			public void onClick(View v) {
-        		Intent OptionsIntent = new Intent(Menu.this,Options.class);
+        		Intent OptionsIntent = new Intent(Menu.this, PackSelectActivity.class);
         		startActivity(OptionsIntent);
         	}
         });

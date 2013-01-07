@@ -558,27 +558,26 @@ public class Options extends Activity implements OnTouchListener {
 	    
 	    private void checkIfLevelIsSolved() {
 	        if (gameGrid.levelIsSolved()) {
-	        	setLevelState(2);
-	        	unlockLevel();
+	        	setCurrentLevelState(2);
+	        	unlockCurrentLevel();
 	        	showLevelCompletePopup();
 			} 
 	    }
 	    
-	    private void setLevelState(int levelState) {
+	    private void setCurrentLevelState(int levelState) {
 	    	AppPreferences appPrefs = new AppPreferences(getContext());
 	    	Globals globals = (Globals) getApplicationContext();
 	    	
 	    	String currentLevel = globals.getCurrentLevel();
-//	    	Log.d("Counting", "Curr Level: "+ String.format("%02d", Integer.parseInt(currentLevel)));
-	    	appPrefs.setLevelState("01", String.format("%02d", Integer.parseInt(currentLevel)), levelState);
+	    	appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", Integer.parseInt(currentLevel)), levelState);
 	    }
 	    
-	    private void unlockLevel() {
+	    private void unlockCurrentLevel() {
 	    	AppPreferences appPrefs = new AppPreferences(getContext());
 	    	Globals globals = (Globals) getApplicationContext();
 	    	
 	    	int currentLevel = Integer.parseInt(globals.getCurrentLevel());
-	    	appPrefs.setLevelState("01", String.format("%02d", (currentLevel + 2)), globals.LEVEL_ENABLED);
+	    	appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", (currentLevel + 2)), Globals.LEVEL_ENABLED);
 	    }
 	    
 	    public void showLevelCompletePopup() {
