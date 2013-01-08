@@ -93,7 +93,7 @@ public class Options extends Activity implements OnTouchListener {
 	    		final float x = event.getX();
 	    		final float y = event.getY();
 	
-	    		Log.d("Counting", "DOWN: "+ offsetX + " | "+ offsetY +" | "+ testSurfaceView.mScaleFactor);
+//	    		Log.d("Counting", "DOWN: "+ offsetX + " | "+ offsetY +" | "+ testSurfaceView.mScaleFactor);
 	    		
 	    		mLastTouchX = (int) x;
 	    		mLastTouchY = (int) y;
@@ -109,7 +109,7 @@ public class Options extends Activity implements OnTouchListener {
 	    	case MotionEvent.ACTION_POINTER_DOWN: {
 	    		final float x = event.getX();
 	    		final float y = event.getY();
-	    		Log.d("Counting", "Pointer_Down: "+ x + " | "+ y);
+//	    		Log.d("Counting", "Pointer_Down: "+ x + " | "+ y);
 	    		break;
 	    	}
 	    	case MotionEvent.ACTION_MOVE: {
@@ -155,7 +155,7 @@ public class Options extends Activity implements OnTouchListener {
 	    		break;
 	    	}
 	    	case MotionEvent.ACTION_UP: {
-	    		Log.d("Counting", "UP: "+ isDrag);
+//	    		Log.d("Counting", "UP: "+ isDrag);
 
 	    		if (!isDrag) {
 		    		final float x = event.getX();
@@ -187,7 +187,7 @@ public class Options extends Activity implements OnTouchListener {
 	    			mLastTouchX = (int) event.getX(newPointerIndex);
 	    			mLastTouchY = (int) event.getY(newPointerIndex);
 	    			mActivePointerId = event.getPointerId(newPointerIndex);
-	    			Log.d("Counting", "We were there: "+ mLastTouchX + " | "+ mLastTouchY);
+//	    			Log.d("Counting", "We were there: "+ mLastTouchX + " | "+ mLastTouchY);
 	    		}
 	    		break;
 	    	}
@@ -467,7 +467,7 @@ public class Options extends Activity implements OnTouchListener {
 		       
 	        parentW = w;
 	        parentH = h;
-	        Log.d("Counting", "pW "+ parentW +" pH "+ parentH);
+//	        Log.d("Counting", "pW "+ parentW +" pH "+ parentH);
 	        gameGrid = new GameGrid(2, w, h, screenDensity, levelConfig);
 	        int[] bitmapDimensions = gameGrid.getBitmapDimensions();
 	        
@@ -476,8 +476,8 @@ public class Options extends Activity implements OnTouchListener {
 	        drawW = w;
 	        drawH = h;
 
-	        Log.d("Counting", "w "+ w +" h "+ h);
-	        Log.d("Counting", "dW "+ drawW +" dH "+ drawH);
+//	        Log.d("Counting", "w "+ w +" h "+ h);
+//	        Log.d("Counting", "dW "+ drawW +" dH "+ drawH);
 	        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
 	        mCanvas = new Canvas(mBitmap);
 	
@@ -497,7 +497,7 @@ public class Options extends Activity implements OnTouchListener {
 	        
 	        offsetX = (parentW/2) - ((fBitmap.getWidth()*mScaleFactor)/2);
 			offsetY = (parentH/2) - ((fBitmap.getHeight()*mScaleFactor)/2);
-			Log.d("Counting", "Initial offset "+ offsetX +" "+ offsetY);
+//			Log.d("Counting", "Initial offset "+ offsetX +" "+ offsetY);
 	        paint.setStrokeWidth(6*LEVEL_SCALE);
 	        
 	        drawDottedGrid(fCanvas, gameGrid.getGuideLinesArray());
@@ -559,7 +559,7 @@ public class Options extends Activity implements OnTouchListener {
 	    private void checkIfLevelIsSolved() {
 	        if (gameGrid.levelIsSolved()) {
 	        	setCurrentLevelState(2);
-	        	unlockCurrentLevel();
+	        	unlockNextLevel();
 	        	showLevelCompletePopup();
 			} 
 	    }
@@ -572,12 +572,12 @@ public class Options extends Activity implements OnTouchListener {
 	    	appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", Integer.parseInt(currentLevel)), levelState);
 	    }
 	    
-	    private void unlockCurrentLevel() {
+	    private void unlockNextLevel() {
 	    	AppPreferences appPrefs = new AppPreferences(getContext());
 	    	Globals globals = (Globals) getApplicationContext();
 	    	
-	    	int currentLevel = Integer.parseInt(globals.getCurrentLevel());
-	    	appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", (currentLevel + 2)), Globals.LEVEL_ENABLED);
+	    	int unlockLevel = appPrefs.getHighestUnlockedLevel();
+	    	appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", unlockLevel), Globals.LEVEL_ENABLED);
 	    }
 	    
 	    public void showLevelCompletePopup() {

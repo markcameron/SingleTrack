@@ -29,4 +29,8 @@ public class Levels {
 	public ArrayList<float[]> getLevels() {
 		return levelList;
 	}
+	
+	public int size() {
+		return levelList.size() - 1;
+	}
 }

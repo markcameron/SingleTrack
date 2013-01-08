@@ -12,8 +12,13 @@ public class MenuButton extends Button {
 	}
 
 	public void setEnabledFromLevelState(int levelState) {
-		if (levelState == -1) {
-			this.setEnabled(false);				
+		switch (levelState) {
+			case Globals.LEVEL_DISABLED:
+			case Globals.LEVEL_UNSET:
+				this.setEnabled(false);				
+				break;
+			default:
+				this.setEnabled(true);				
 		}
 	}
 	

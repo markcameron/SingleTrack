@@ -1,16 +1,17 @@
 package com.android.mcameron.singletrack;
 
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class AppPreferences {
 	private static final String APP_PREFERENCES = "SINGLETRACK_PREFERENCES";
 
 	private SharedPreferences appSharedPrefs;
 	private SharedPreferences.Editor prefsEditor;
+	
+	static Globals globals = new Globals();
 	 
 	public AppPreferences(Context context){
 		this.appSharedPrefs = context.getSharedPreferences(APP_PREFERENCES, Activity.MODE_PRIVATE);
@@ -18,7 +19,7 @@ public class AppPreferences {
 	}
 	 
 	public int getLevelState(String levelPack, String levelNumber) {
-		return appSharedPrefs.getInt(levelPack + levelNumber, Globals.LEVEL_UNSET);
+		return appSharedPrefs.getInt(levelPack + levelNumber, Globals.LEVEL_DISABLED);
 	}
 	 
 	public void setLevelState(String levelPack, String levelNumber, int levelState) {
@@ -29,12 +30,19 @@ public class AppPreferences {
 		prefsEditor.clear().commit();
 	}
 	 
-	public int getHighestUnlockedLevel(String levelPack) {
+	public int getHighestUnlockedLevel() {
+		Levels levels = new Levels();
+		int i;
 		
-		for (Map.Entry<String,?> entry : appSharedPrefs.getAll().entrySet()) {
-			
+		for (i = 3; i < levels.size() ; i++) {
+			int levelState = getLevelState(globals.getCurrentPack(), String.format("%02d", i));
+			Log.d("Counting", "Level "+ i +" has LevelState: "+ levelState);
+			if (levelState == Globals.LEVEL_DISABLED) {
+				Log.d("Counting", "break you cunt");
+				break;
+			}
 		}
-		 
-		return appSharedPrefs.getInt(levelPack, Globals.LEVEL_UNSET);
+		
+		return i;
 	}
 }

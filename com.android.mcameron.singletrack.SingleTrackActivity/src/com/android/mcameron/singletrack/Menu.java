@@ -19,7 +19,7 @@ public class Menu extends Activity {
         	
         	@Override
 			public void onClick(View v) {
-        		Intent StartGameIntent = new Intent(Menu.this, LevelSelectActivity.class);
+        		Intent StartGameIntent = new Intent(Menu.this, PackSelectActivity.class);
         		startActivity(StartGameIntent);
         	}
         });
@@ -41,7 +41,7 @@ public class Menu extends Activity {
         	
         	@Override
 			public void onClick(View v) {
-        		Intent OptionsIntent = new Intent(Menu.this, PackSelectActivity.class);
+        		Intent OptionsIntent = new Intent(Menu.this, LevelSelectActivity.class);
         		startActivity(OptionsIntent);
         	}
         });

@@ -95,9 +95,14 @@ public class LevelSelectActivity extends Activity {
 
 			Globals globals = (Globals) getApplicationContext();
 			AppPreferences appPrefs = new AppPreferences(mContext);
-			Log.d("Counting", "current pack: "+ globals.getCurrentPack());
+//			Log.d("Counting", "current pack: "+ globals.getCurrentPack());
 			int levelState = appPrefs.getLevelState(globals.getCurrentPack(), String.format("%02d", position + 1));
 //			Log.d("Counting", Integer.toString(position) +" | "+ Integer.toString(levelState));
+			
+			if (levelState == Globals.LEVEL_UNSET && position < 2) {
+				Log.d("Counting", "position: "+ 2 +" Level State: "+ levelState);
+				appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", position + 1), Globals.LEVEL_SOLVED);
+			}
 			
 			if (position > 1) {
 				btn.setEnabledFromLevelState(levelState);
