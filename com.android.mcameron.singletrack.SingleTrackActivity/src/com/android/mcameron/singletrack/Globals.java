@@ -9,7 +9,7 @@ public class Globals extends Application {
 	  public static final byte LEVEL_UNSET = -1;
 	  public static final byte LEVEL_DISABLED = 0;
 	  public static final byte LEVEL_ENABLED = 1;
-	  public static final byte LEVEL_SOLVED = 1;
+	  public static final byte LEVEL_SOLVED = 2;
 
 	  public static final String PACK_SQUARES = "01";
 	  public static final String PACK_RECTANGLES = "02";

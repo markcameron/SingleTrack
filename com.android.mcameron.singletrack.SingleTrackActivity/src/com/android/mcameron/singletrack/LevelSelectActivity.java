@@ -99,11 +99,12 @@ public class LevelSelectActivity extends Activity {
 			int levelState = appPrefs.getLevelState(globals.getCurrentPack(), String.format("%02d", position + 1));
 //			Log.d("Counting", Integer.toString(position) +" | "+ Integer.toString(levelState));
 			
-			if (levelState == Globals.LEVEL_UNSET && position < 2) {
-				Log.d("Counting", "position: "+ 2 +" Level State: "+ levelState);
-				appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", position + 1), Globals.LEVEL_SOLVED);
+			if (levelState == Globals.LEVEL_DISABLED && position < 2) {
+				Log.d("Counting", "setState position: "+ position +" Level State: "+ levelState);
+				appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", position + 1), Globals.LEVEL_ENABLED);
 			}
-			
+			levelState = appPrefs.getLevelState(globals.getCurrentPack(), String.format("%02d", position + 1));
+			Log.d("Counting", "setEnabled position: "+ position +" Level State: "+ levelState);
 			if (position > 1) {
 				btn.setEnabledFromLevelState(levelState);
 			}

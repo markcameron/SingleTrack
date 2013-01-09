@@ -33,10 +33,16 @@ public class AppPreferences {
 	public int getHighestUnlockedLevel() {
 		Levels levels = new Levels();
 		int i;
-		
-		for (i = 3; i < levels.size() ; i++) {
+		int unsolvedCount = 0;
+		for (i = 2; i < levels.size() ; i++) {
 			int levelState = getLevelState(globals.getCurrentPack(), String.format("%02d", i));
 			Log.d("Counting", "Level "+ i +" has LevelState: "+ levelState);
+			if (levelState == Globals.LEVEL_ENABLED) {
+				unsolvedCount++;
+				if (unsolvedCount == 2) {
+					break;
+				}
+			}
 			if (levelState == Globals.LEVEL_DISABLED) {
 				Log.d("Counting", "break you cunt");
 				break;
