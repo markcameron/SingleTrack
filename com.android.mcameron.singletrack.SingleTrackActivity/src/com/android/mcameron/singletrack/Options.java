@@ -1,6 +1,9 @@
 package com.android.mcameron.singletrack;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -223,6 +226,7 @@ public class Options extends Activity implements OnTouchListener {
 		private float right;
 		private float bottom;
 		private int screenDensity;
+		private Queue<int[]> invalidLines = new LinkedList<int[]>();
 		
 		private float[] levelConfig = new float[]{6,6,0,3,1,3,0,3,0,2,1,3,1,2,1,1,1,0,1,1,2,1,2,1,2,0,3,2,3,1};
 		
@@ -430,7 +434,9 @@ public class Options extends Activity implements OnTouchListener {
 				if (!surfaceHolder.getSurface().isValid()) {
 					continue;
 				}
-				
+		    	decreaseLineOpacity();
+        		drawLinesInvalid();
+
 				Canvas canvas = surfaceHolder.lockCanvas();
 //				Log.d("Counting", "Scale factor "+ parentW +" "+ parentH);
 				canvas.setMatrix(matrix);
@@ -532,11 +538,8 @@ public class Options extends Activity implements OnTouchListener {
 	    	        numberOfMoves++;
 	        		checkIfLevelIsSolved();
 				}
-	        	else {
-	        		paint.setAlpha(100);
-	        		paint.setColor(Color.RED);	        
-	    	        //fCanvas.drawLines(line, paint);
-	    	        gameGrid.setFadingLine(true);
+	        	else if (!gameGrid.isOutsideGrid(line)) {
+	        		addLineToInvalidList(line);
 	        	}
 	        }
 	    }
@@ -546,6 +549,53 @@ public class Options extends Activity implements OnTouchListener {
         	paint.setColor(Color.rgb(92,172,238));	        
 	        mCanvas.drawLines(line, paint);
 	    }
+	    
+	    private void drawLinesInvalid() {
+    		Iterator<int[]> iterator = invalidLines.iterator();
+	    	while (iterator.hasNext()) {
+	    		int[] invalidLine = iterator.next();
+	    		float[] line = {invalidLine[1], invalidLine[2], invalidLine[3], invalidLine[4]};
+	        	Xfermode originalXfermode = paint.getXfermode();
+	        	paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+	    		mCanvas.drawLines(line, paint);
+	    		paint.setXfermode(originalXfermode);
+	    		
+	    		paint.setColor(Color.RED);
+	    		paint.setAlpha(invalidLine[0]);
+		    	
+		    	mCanvas.drawLines(line, paint);
+		    	
+	    	}
+	    }
+	    
+	    private void addLineToInvalidList(float[] line) {
+	    	int[] lineWithOpacity = new int[5];
+	    	lineWithOpacity[0] = 250;
+	    	lineWithOpacity[1] = (int) line[0];
+	    	lineWithOpacity[2] = (int) line[1];
+	    	lineWithOpacity[3] = (int) line[2];
+	    	lineWithOpacity[4] = (int) line[3];
+	    	invalidLines.add(lineWithOpacity);
+	    }
+	    
+	    private void decreaseLineOpacity() {
+	    	Iterator<int[]> iterator = invalidLines.iterator();
+	    	while (iterator.hasNext()) {
+	    		int[] line = iterator.next();
+	    		if (line[0] == 0) {
+	    			iterator.remove();
+	    		}
+			}
+	    	
+	    	iterator = invalidLines.iterator();
+	    	while (iterator.hasNext()) {
+	    		int[] line = iterator.next();
+	    		line[0] -= 10;
+	    		Log.d("Counting", "Opacity: "+ line[0]);
+			}
+	    }
+	    
+	    
 	    
 	    private void deleteLineValid(float[] line) {
         	gameGrid.removeLine(line);

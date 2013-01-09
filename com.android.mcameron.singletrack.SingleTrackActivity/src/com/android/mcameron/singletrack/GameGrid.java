@@ -365,7 +365,7 @@ public class GameGrid {
      * 
      * @return TRUE if point is inside the grid, FALSE otherwise
      */
-    private boolean isOutsideGrid(float[] line) {
+    public boolean isOutsideGrid(float[] line) {
     	for (int i = 0; i <= gridPts.length-1; i++) {
     		// Only check the point we're going to, departure point must exist.
     		if (i % 2 == 0) {
