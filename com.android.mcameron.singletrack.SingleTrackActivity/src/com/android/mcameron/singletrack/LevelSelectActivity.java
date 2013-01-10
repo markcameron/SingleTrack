@@ -92,7 +92,7 @@ public class LevelSelectActivity extends Activity {
 			else {  
 				btn = (MenuButton) convertView;  
 			}  
-
+			Log.d("Counting", "position: "+ (position+1));
 			Globals globals = (Globals) getApplicationContext();
 			AppPreferences appPrefs = new AppPreferences(mContext);
 //			Log.d("Counting", "current pack: "+ globals.getCurrentPack());
@@ -100,11 +100,11 @@ public class LevelSelectActivity extends Activity {
 //			Log.d("Counting", Integer.toString(position) +" | "+ Integer.toString(levelState));
 			
 			if (levelState == Globals.LEVEL_DISABLED && position < 2) {
-				Log.d("Counting", "setState position: "+ position +" Level State: "+ levelState);
+				Log.d("Counting", "setState position: "+ (position+1) +" Level State: "+ levelState);
 				appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", position + 1), Globals.LEVEL_ENABLED);
 			}
 			levelState = appPrefs.getLevelState(globals.getCurrentPack(), String.format("%02d", position + 1));
-			Log.d("Counting", "setEnabled position: "+ position +" Level State: "+ levelState);
+			Log.d("Counting", "setEnabled position: "+ (position+1) +" Level State: "+ levelState);
 			if (position > 1) {
 				btn.setEnabledFromLevelState(levelState);
 			}

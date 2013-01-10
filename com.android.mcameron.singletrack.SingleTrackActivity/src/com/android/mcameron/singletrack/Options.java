@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -226,7 +227,7 @@ public class Options extends Activity implements OnTouchListener {
 		private float right;
 		private float bottom;
 		private int screenDensity;
-		private Queue<int[]> invalidLines = new LinkedList<int[]>();
+		private CopyOnWriteArrayList<int[]> invalidLines = new CopyOnWriteArrayList<int[]>();
 		
 		private float[] levelConfig = new float[]{6,6,0,3,1,3,0,3,0,2,1,3,1,2,1,1,1,0,1,1,2,1,2,1,2,0,3,2,3,1};
 		
@@ -435,7 +436,7 @@ public class Options extends Activity implements OnTouchListener {
 					continue;
 				}
 		    	decreaseLineOpacity();
-        		drawLinesInvalid();
+		    	drawLinesInvalid();
 
 				Canvas canvas = surfaceHolder.lockCanvas();
 //				Log.d("Counting", "Scale factor "+ parentW +" "+ parentH);
@@ -551,24 +552,24 @@ public class Options extends Activity implements OnTouchListener {
 	    }
 	    
 	    private void drawLinesInvalid() {
-    		Iterator<int[]> iterator = invalidLines.iterator();
-	    	while (iterator.hasNext()) {
-	    		int[] invalidLine = iterator.next();
+//    		Iterator<int[]> iterator = invalidLines.iterator();
+    		paint.setColor(Color.RED);
+    		
+    		for (Iterator<int[]> iterator = invalidLines.iterator(); iterator.hasNext();) {
+//    		while (iterator.hasNext()) {
+	    		int[] invalidLine = iterator.next();	
 	    		float[] line = {invalidLine[1], invalidLine[2], invalidLine[3], invalidLine[4]};
-	        	Xfermode originalXfermode = paint.getXfermode();
+	        
+	    		Xfermode originalXfermode = paint.getXfermode();
 	        	paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 	    		mCanvas.drawLines(line, paint);
 	    		paint.setXfermode(originalXfermode);
-	    		
-	    		paint.setColor(Color.RED);
 	    		paint.setAlpha(invalidLine[0]);
-		    	
 		    	mCanvas.drawLines(line, paint);
-		    	
 	    	}
 	    }
 	    
-	    private void addLineToInvalidList(float[] line) {
+	    private void addLineToInvalidList(float[] line) {	
 	    	int[] lineWithOpacity = new int[5];
 	    	lineWithOpacity[0] = 250;
 	    	lineWithOpacity[1] = (int) line[0];
@@ -579,36 +580,33 @@ public class Options extends Activity implements OnTouchListener {
 	    }
 	    
 	    private void decreaseLineOpacity() {
-	    	Iterator<int[]> iterator = invalidLines.iterator();
-	    	while (iterator.hasNext()) {
+	    	int position = 0;
+	    	for (Iterator<int[]> iterator = invalidLines.iterator(); iterator.hasNext();) {
 	    		int[] line = iterator.next();
-	    		if (line[0] == 0) {
-	    			iterator.remove();
+	    		if (line[0] <= 0) {
+	    			invalidLines.remove(position);
 	    		}
+	    		position++;
 			}
-	    	
-	    	iterator = invalidLines.iterator();
-	    	while (iterator.hasNext()) {
+
+    		for (Iterator<int[]> iterator = invalidLines.iterator(); iterator.hasNext();) {
 	    		int[] line = iterator.next();
 	    		line[0] -= 10;
 	    		Log.d("Counting", "Opacity: "+ line[0]);
 			}
 	    }
 	    
-	    
-	    
 	    private void deleteLineValid(float[] line) {
         	gameGrid.removeLine(line);
         	Xfermode originalXfermode = paint.getXfermode();
 			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-	        //paint.setColor(Color.WHITE);
 	        mCanvas.drawLines(line, paint);
 	        paint.setXfermode(originalXfermode);
 	    }
 	    
 	    private void checkIfLevelIsSolved() {
 	        if (gameGrid.levelIsSolved()) {
-	        	setCurrentLevelState(2);
+	        	setCurrentLevelState(Globals.LEVEL_SOLVED);
 	        	unlockNextLevel();
 	        	showLevelCompletePopup();
 			} 
@@ -620,6 +618,8 @@ public class Options extends Activity implements OnTouchListener {
 	    	
 	    	String currentLevel = globals.getCurrentLevel();
 	    	appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", Integer.parseInt(currentLevel)), levelState);
+	    	levelState = appPrefs.getLevelState(globals.getCurrentPack(), String.format("%02d", Integer.parseInt(currentLevel)));
+	    	Log.d("Counting", "currLevel: "+ currentLevel +" LevelState: "+ levelState);
 	    }
 	    
 	    private void unlockNextLevel() {

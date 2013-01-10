@@ -23,6 +23,7 @@ public class AppPreferences {
 	}
 	 
 	public void setLevelState(String levelPack, String levelNumber, int levelState) {
+		Log.d("Counting", "LP LN: "+ levelPack + levelNumber);
 		prefsEditor.putInt(levelPack + levelNumber, levelState).commit();
 	}
 	 
