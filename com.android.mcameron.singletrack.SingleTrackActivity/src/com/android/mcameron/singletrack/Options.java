@@ -524,8 +524,9 @@ public class Options extends Activity implements OnTouchListener {
 	        if (gameGrid.isFixedLine(line)) {
 				return;
 			}
-	        // Do nothing if one of the points is the start or the finish point
+	        // Draw red fading line if one of the points is the start or the finish point
 	        if (gameGrid.lineVisitsStartFinish(line)) {
+	        	addLineToInvalidList(line);
 				return;
 			}
 	        
@@ -626,8 +627,11 @@ public class Options extends Activity implements OnTouchListener {
 	    	AppPreferences appPrefs = new AppPreferences(getContext());
 	    	Globals globals = (Globals) getApplicationContext();
 	    	
+	    	String currentLevel = globals.getCurrentLevel();
 	    	int unlockLevel = appPrefs.getHighestUnlockedLevel();
-	    	appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", unlockLevel), Globals.LEVEL_ENABLED);
+	    	if (unlockLevel != Integer.parseInt(currentLevel)) {
+	    		appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", unlockLevel), Globals.LEVEL_ENABLED);
+	    	}
 	    }
 	    
 	    public void showLevelCompletePopup() {

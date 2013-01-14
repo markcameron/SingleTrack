@@ -8,8 +8,6 @@ public class Levels {
 	static ArrayList <float[]>levelList = new ArrayList<float[]>();
 	
 	public void setLevelPack(String levelPack) {
-//		ArrayList<float[]> levelPackList = null;
-		
 		if (levelPack.equals(Globals.PACK_SQUARES)) {
 			LevelPackSquares levelPackSquares = new LevelPackSquares();
 			levelList = levelPackSquares.getLevelPackSquares();
@@ -18,8 +16,6 @@ public class Levels {
 			LevelPackRectangles levelPackRectangles = new LevelPackRectangles();
 			levelList = levelPackRectangles.getLevelPackRectangles();
 		}
-
-//		return levelPackList;
 	}
 	
 	public float[] getLevel(int index) {
