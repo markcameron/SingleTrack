@@ -14,11 +14,11 @@ public class Globals extends Application {
 	  public static final String PACK_SQUARES = "01";
 	  public static final String PACK_RECTANGLES = "02";
 	  
-	  public void setCurrentLevel(String levelID){
+	  public static void setCurrentLevel(String levelID){
 		  currentLevel = levelID;
 	  }
 	  
-	  public String getCurrentLevel(){
+	  public static String getCurrentLevel(){
 		  return currentLevel;
 	  }
 	  
@@ -26,7 +26,7 @@ public class Globals extends Application {
 		  currentPack = levelPack;
 	  }
 	  
-	  public String getCurrentPack(){
+	  public static String getCurrentPack(){
 		  return currentPack;
 	  }
 	  
@@ -35,7 +35,7 @@ public class Globals extends Application {
 		  return getCurrentLevel();
 	  }
 	  
-	  public void setNextLevel() {
+	  public static void setNextLevel() {
 		  int currentLevel = Integer.parseInt(Globals.currentLevel);
 		  setCurrentLevel(Integer.toString(++currentLevel));
 	  }

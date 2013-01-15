@@ -7,6 +7,6 @@
     <string name="main_menu">Main Menu</string>
     <string name="next_level">Next Level</string>
 	<string name="number_of_moves">Number of moves:</string>
-	<string name="squares">Squares</string>
+	<string name="squares">Squares\n<small>Completed 5 of 50</small></string>
 	<string name="rectangles">Rectangles</string>
 </resources>
