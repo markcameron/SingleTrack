@@ -2,8 +2,6 @@ package com.android.mcameron.singletrack;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
 public class Levels {
 	static ArrayList <float[]>levelList = new ArrayList<float[]>();
 	

@@ -1,17 +1,13 @@
 package com.android.mcameron.singletrack;
 
-import com.android.mcameron.singletrack.DrawSurfaceView;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 
 public class SingleTrackActivity extends Activity {
     /** Called when the activity is first created. */
-	DrawSurfaceView drawSurfaceView;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,13 +39,11 @@ public class SingleTrackActivity extends Activity {
     @Override
     public void onPause() {
     	super.onPause();
-//    	drawSurfaceView.pause();
     }
    
     @Override
     public void onResume() {
     	super.onResume();
-//    	drawSurfaceView.resume();
     }
     
 	@Override

@@ -11,8 +11,6 @@ public class AppPreferences {
 	private SharedPreferences appSharedPrefs;
 	private SharedPreferences.Editor prefsEditor;
 	
-	static Globals globals = new Globals();
-	 
 	public AppPreferences(Context context){
 		this.appSharedPrefs = context.getSharedPreferences(APP_PREFERENCES, Activity.MODE_PRIVATE);
 		this.prefsEditor = appSharedPrefs.edit();
@@ -36,8 +34,8 @@ public class AppPreferences {
 		int i;
 		int unsolvedCount = 0;
 		for (i = 2; i < levels.size() ; i++) {
-			int levelState = getLevelState(globals.getCurrentPack(), String.format("%02d", i));
-			Log.d("Counting", "Level "+ i +" has LevelState: "+ levelState);
+			int levelState = getLevelState(Globals.getCurrentPack(), String.format("%02d", i));
+//			Log.d("Counting", "Level "+ i +" has LevelState: "+ levelState);
 			if (levelState == Globals.LEVEL_ENABLED) {
 				unsolvedCount++;
 				if (unsolvedCount == 2) {
@@ -45,7 +43,6 @@ public class AppPreferences {
 				}
 			}
 			if (levelState == Globals.LEVEL_DISABLED) {
-				Log.d("Counting", "break you cunt");
 				break;
 			}
 		}

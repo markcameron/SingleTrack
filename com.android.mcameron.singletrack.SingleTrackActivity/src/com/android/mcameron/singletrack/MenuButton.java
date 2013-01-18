@@ -1,7 +1,6 @@
 package com.android.mcameron.singletrack;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Button;
 
 public class MenuButton extends Button {

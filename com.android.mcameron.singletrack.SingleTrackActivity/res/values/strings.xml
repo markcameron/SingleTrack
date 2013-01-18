@@ -9,4 +9,6 @@
 	<string name="number_of_moves">Number of moves:</string>
 	<string name="squares">Squares\n<small>Completed 5 of 50</small></string>
 	<string name="rectangles">Rectangles</string>
+	<string name="options_music">Music</string>
+	<string name="options_sound_effects">Sounds</string>
 </resources>

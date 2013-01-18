@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -92,19 +91,16 @@ public class LevelSelectActivity extends Activity {
 			else {  
 				btn = (MenuButton) convertView;  
 			}  
-			Log.d("Counting", "position: "+ (position+1));
-			Globals globals = (Globals) getApplicationContext();
+
 			AppPreferences appPrefs = new AppPreferences(mContext);
-//			Log.d("Counting", "current pack: "+ globals.getCurrentPack());
-			int levelState = appPrefs.getLevelState(globals.getCurrentPack(), String.format("%02d", position + 1));
-//			Log.d("Counting", Integer.toString(position) +" | "+ Integer.toString(levelState));
+
+			int levelState = appPrefs.getLevelState(Globals.getCurrentPack(), String.format("%02d", position + 1));
 			
 			if (levelState == Globals.LEVEL_DISABLED && position < 2) {
-				Log.d("Counting", "setState position: "+ (position+1) +" Level State: "+ levelState);
-				appPrefs.setLevelState(globals.getCurrentPack(), String.format("%02d", position + 1), Globals.LEVEL_ENABLED);
+				appPrefs.setLevelState(Globals.getCurrentPack(), String.format("%02d", position + 1), Globals.LEVEL_ENABLED);
 			}
-			levelState = appPrefs.getLevelState(globals.getCurrentPack(), String.format("%02d", position + 1));
-			Log.d("Counting", "setEnabled position: "+ (position+1) +" Level State: "+ levelState);
+			levelState = appPrefs.getLevelState(Globals.getCurrentPack(), String.format("%02d", position + 1));
+
 			if (position > 1) {
 				btn.setEnabledFromLevelState(levelState);
 			}

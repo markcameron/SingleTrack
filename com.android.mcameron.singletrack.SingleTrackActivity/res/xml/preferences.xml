@@ -1,0 +1,17 @@
+<PreferenceScreen
+xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Localization">
+		<CheckBoxPreference
+			android:key="game_music"
+			android:title="@string/options_music"
+			android:summary="Enable the music"
+			android:defaultValue="true" 
+		/>
+		<CheckBoxPreference
+			android:key="game_sounds"
+			android:title="@string/options_sound_effects"
+			android:summary="Enanle the sound effects"
+			android:defaultValue="true" 
+		/>
+	</PreferenceCategory>
+</PreferenceScreen>

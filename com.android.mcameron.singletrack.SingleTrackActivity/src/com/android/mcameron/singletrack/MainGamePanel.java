@@ -43,17 +43,23 @@ import android.widget.TextView;
 public class MainGamePanel extends SurfaceView implements
 		SurfaceHolder.Callback {
 
+	private static final int RED_LINE_DECREASE_OPACITY_BY = 10;
+	private static final int RED_LINE_INITIAL_OPACITY = 250;
+
+	private static final int LEVEL_SCALE = 2;
+	
+    private static float MIN_ZOOM = 0.5f;
+    private static float MAX_ZOOM = 1f;
+	
 	private static final String TAG = MainGamePanel.class.getSimpleName();
 	
 	private MainThread thread;
 	
 	private Paint paintFPS = new Paint();
-	
-	private static final int LEVEL_SCALE = 2;
+
 	GameGrid gameGrid;
 	private Matrix matrix;
 	private SurfaceHolder surfaceHolder;
-	private boolean isRunning = true;
 	private Bitmap mBitmap;
 	private Canvas mCanvas;
 	private Paint paint;
@@ -80,6 +86,8 @@ public class MainGamePanel extends SurfaceView implements
     private float drawW, drawH, parentW, parentH, distanceMoved;
     private float offsetX = 0;
     private float offsetY = 0;
+    private float translateX = 0;
+    private float translateY = 0;
     private Context activityContext;
     
     private boolean isDrag = false;
@@ -116,10 +124,11 @@ public class MainGamePanel extends SurfaceView implements
         // Draw and setup level
         setLevel(level);
 		
-		// create droid and load bitmap
+		// Initialize stuff
 		surfaceHolder = getHolder();
 		mScaleFactor = 1.0f;
 		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+		
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         screenDensity = dm.densityDpi;
 		
@@ -168,18 +177,19 @@ public class MainGamePanel extends SurfaceView implements
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-//    	testSurfaceView.mScaleDetector.onTouchEvent(event);
-    	//Log.d("Counting", "x: "+ x + " | y: "+ y +" | mX: "+ mX + " | mY: "+ mY +" | mLastTouchX: "+ mLastTouchX +" | mLastTouchY: "+ mLastTouchY);
+		mScaleDetector.onTouchEvent(event);
+    	
+		Log.d("Counting", "mX: "+ mX + " | mY: "+ mY +" | mLastTouchX: "+ mLastTouchX +" | mLastTouchY: "+ mLastTouchY +" OffsetX: "+ offsetX +" offsetY: "+ offsetY);
     	final int action = event.getAction();
     	switch (action & MotionEvent.ACTION_MASK) {
 	    	case MotionEvent.ACTION_DOWN: {
 	    		final float x = event.getX();
 	    		final float y = event.getY();
 	
-//	    		Log.d("Counting", "DOWN: "+ offsetX + " | "+ offsetY +" | "+ testSurfaceView.mScaleFactor);
+	    		Log.d("Counting", "DOWN: "+ offsetX + " | "+ offsetY +" | "+ mScaleFactor +" mxl: "+ mLastTouchX +" myl: "+ mLastTouchY);
 	    		
-	    		mLastTouchX = (int) x;
-	    		mLastTouchY = (int) y;
+	    		mLastTouchX = x;
+	    		mLastTouchY = y;
 	    		
 	    		isDrag = false;
 	    		distanceMoved = 0;
@@ -192,7 +202,7 @@ public class MainGamePanel extends SurfaceView implements
 	    	case MotionEvent.ACTION_POINTER_DOWN: {
 	    		final float x = event.getX();
 	    		final float y = event.getY();
-//	    		Log.d("Counting", "Pointer_Down: "+ x + " | "+ y);
+	    		Log.d("Counting", "Pointer_Down: "+ x + " | "+ y);
 	    		break;
 	    	}
 	    	case MotionEvent.ACTION_MOVE: {
@@ -200,22 +210,25 @@ public class MainGamePanel extends SurfaceView implements
 	    			break;
 	    		}
 	    		
-//	    		Log.d("Counting", "Move:"+ mX + " | "+ mY);
+	    		Log.d("Counting", "Move:"+ mX + " | "+ mY);
 	    		// Find the index of the active pointer and fetch its position
 	    		final int pointerIndex = event.findPointerIndex(mActivePointerId);
 	    		final float x1 = event.getX(pointerIndex);
 	    		final float y1 = event.getY(pointerIndex);
 	
 	    		// Only move if the ScaleGestureDetector isn't processing a gesture.
-//	    		if (!testSurfaceView.mScaleDetector.isInProgress()) {
+	    		if (!mScaleDetector.isInProgress()) {
 	    			final float dx = x1 - mLastTouchX;
 	    			final float dy = y1 - mLastTouchY;
 	
 	    			mX += dx;
 	    			mY += dy;
-	    			matrix.postTranslate(mX, mY);
+	    			translateX = mX;
+	    			translateY = mY;
+	    			matrix.postTranslate(mX * mScaleFactor, mY * mScaleFactor);
 //	    			Log.d("Counting", "Move:"+ mX + " | "+ mY +" | "+ testSurfaceView.mScaleFactor);
 //	    			Log.d("Counting", "Move Down: "+ offsetX + " | "+ offsetY +" | "+ testSurfaceView.mScaleFactor);
+	    			Log.d("Counting", "XXXXXXXXXXXXXXXXXXXXX We are moving!!! Move:"+ mX + " | "+ mY);
 	    			offsetX += mX; 
 			        offsetY += mY;
 			        
@@ -224,7 +237,7 @@ public class MainGamePanel extends SurfaceView implements
 	    			mX = mY = 0;
 	    			
 	    			rebound();
-//	    		}
+	    		}
 	    		
 	    		// Only say we're dragging if we've moved more then X number
 	    		// of pixels combined to avoid small jerks on touch
@@ -238,7 +251,7 @@ public class MainGamePanel extends SurfaceView implements
 	    		break;
 	    	}
 	    	case MotionEvent.ACTION_UP: {
-//	    		Log.d("Counting", "UP: "+ isDrag);
+	    		Log.d("Counting", "UP: "+ isDrag);
 
 	    		if (!isDrag) {
 		    		final float x = event.getX();
@@ -283,14 +296,17 @@ public class MainGamePanel extends SurfaceView implements
 		if (canvas != null) {
 			canvas.drawRGB(255, 255, 255);
 			canvas.setMatrix(matrix);
+//			canvas.translate(translateY, translateY);
+//			Log.d("Counting", "Le Matrix: "+ matrix.toString());
 			canvas.scale(mScaleFactor, mScaleFactor);
+//			canvas.scale(mScaleFactor, mScaleFactor, mScaleDetector.getFocusX(), mScaleDetector.getFocusY());
 			
 			float centerPointWidth = parentW / 2;
 			float centerPointHeight = parentH / 2;
-			centerPointWidth = centerPointWidth - ((fBitmap.getWidth()*mScaleFactor)/2);
-			centerPointHeight = centerPointHeight- ((fBitmap.getHeight()*mScaleFactor)/2);
-	//		Log.d("Counting", "Image "+ fBitmap.getWidth() +" "+ fBitmap.getHeight() +" "+ centerPointWidth +" "+ centerPointHeight +" "+ ((fBitmap.getWidth()*mScaleFactor)/2) +" "+ ((fBitmap.getHeight()*mScaleFactor)/2) +" "+ mScaleFactor);
-	//		Log.d("Counting", "cpWidth "+ centerPointWidth +" cpHeight "+ centerPointHeight +" xOffset "+ offsetX +" yOffset "+ offsetY +" bmpWidth "+ fBitmap.getWidth());
+			centerPointWidth = centerPointWidth - ((fBitmap.getWidth())/2);
+			centerPointHeight = centerPointHeight- ((fBitmap.getHeight())/2);
+//			Log.d("Counting", "Image "+ fBitmap.getWidth() +" "+ fBitmap.getHeight() +" "+ centerPointWidth +" "+ centerPointHeight +" "+ ((fBitmap.getWidth()*mScaleFactor)/2) +" "+ ((fBitmap.getHeight()*mScaleFactor)/2) +" "+ mScaleFactor);
+//			Log.d("Counting", "cpWidth "+ centerPointWidth +" cpHeight "+ centerPointHeight +" xOffset "+ offsetX +" yOffset "+ offsetY +" bmpWidth "+ fBitmap.getWidth());
 			canvas.drawBitmap(fBitmap, centerPointWidth, centerPointHeight, null);
 			canvas.drawBitmap(mBitmap, centerPointWidth, centerPointHeight, null);
 			canvas.drawBitmap(iBitmap, centerPointWidth, centerPointHeight, null);
@@ -320,70 +336,14 @@ public class MainGamePanel extends SurfaceView implements
 		}
 	}
 	
-    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-    	private float maxScale = 1f;
-		private float minScale = 0.5f;
-		
-		float[] m = new float[9];
-
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 		@Override
-    	public boolean onScale(ScaleGestureDetector detector) {
-    	    float mScaleFactor = (float) Math.min(
-    	        Math.max(.8f, detector.getScaleFactor()), 1.2);
-    	    float origScale = saveScale;
-    	    saveScale *= mScaleFactor;
-    	    if (saveScale > maxScale) {
-    	        saveScale = maxScale;
-    	        mScaleFactor = maxScale / origScale;
-    	    } else if (saveScale < minScale) {
-    	        saveScale = minScale;
-    	        mScaleFactor = minScale / origScale;
-    	    }
-    	    right = width * saveScale - width
-    	            - (2 * redundantXSpace * saveScale);
-    	    bottom = height * saveScale - height
-    	            - (2 * redundantYSpace * saveScale);
-    	    if (origWidth * saveScale <= width
-    	            || origHeight * saveScale <= height) {
-    	        matrix.postScale(mScaleFactor, mScaleFactor, width / 2, height / 2);
-    	        if (mScaleFactor < 1) {
-    	            matrix.getValues(m);
-    	            float x = m[Matrix.MTRANS_X];
-    	            float y = m[Matrix.MTRANS_Y];
-    	            if (mScaleFactor < 1) {
-    	                if (Math.round(origWidth * saveScale) < width) {
-    	                    if (y < -bottom)
-    	                        matrix.postTranslate(0, -(y + bottom));
-    	                    else if (y > 0)
-    	                        matrix.postTranslate(0, -y);
-    	                } else {
-    	                    if (x < -right)
-    	                        matrix.postTranslate(-(x + right), 0);
-    	                    else if (x > 0)
-    	                        matrix.postTranslate(-x, 0);
-    	                }
-    	            }
-    	        }
-    	    } else {
-    	        matrix.postScale(mScaleFactor, mScaleFactor, detector.getFocusX(), detector.getFocusY());
-    	        matrix.getValues(m);
-    	        float x = m[Matrix.MTRANS_X];
-    	        float y = m[Matrix.MTRANS_Y];
-    	        if (mScaleFactor < 1) {
-    	            if (x < -right)
-    	                matrix.postTranslate(-(x + right), 0);
-    	            else if (x > 0)
-    	                matrix.postTranslate(-x, 0);
-    	            if (y < -bottom)
-    	                matrix.postTranslate(0, -(y + bottom));
-    	            else if (y > 0)
-    	                matrix.postTranslate(0, -y);
-    	        }
-    	    }
-    	    return true;
-    	}
-
-    }
+		public boolean onScale(ScaleGestureDetector detector) {
+			mScaleFactor *= detector.getScaleFactor();
+			mScaleFactor = Math.max(MIN_ZOOM, Math.min(mScaleFactor, MAX_ZOOM));
+			return true;
+		}
+	}
     
 	public void rebound() {
 	    // make a rectangle representing what our current canvas looks like
@@ -479,7 +439,7 @@ public class MainGamePanel extends SurfaceView implements
         Canvas initCanvas = new Canvas(iBitmap);
        
         matrix = initCanvas.getMatrix();
-        
+//        Log.d("Counting", "surely not!?!?!?");
         offsetX = (parentW/2) - ((fBitmap.getWidth()*mScaleFactor)/2);
 		offsetY = (parentH/2) - ((fBitmap.getHeight()*mScaleFactor)/2);
 //		Log.d("Counting", "Initial offset "+ offsetX +" "+ offsetY);
@@ -503,7 +463,7 @@ public class MainGamePanel extends SurfaceView implements
 			return;
 		}
         // Draw red fading line if one of the points is the start or the finish point
-        if (gameGrid.lineVisitsStartFinish(line)) {
+        if (gameGrid.lineVisitsStartFinish(line) && !gameGrid.isOutsideGrid(line)) {
         	addLineToInvalidList(line);
 			return;
 		}
@@ -548,7 +508,7 @@ public class MainGamePanel extends SurfaceView implements
     
     private void addLineToInvalidList(float[] line) {	
     	int[] lineWithOpacity = new int[5];
-    	lineWithOpacity[0] = 250;
+    	lineWithOpacity[0] = RED_LINE_INITIAL_OPACITY;
     	lineWithOpacity[1] = (int) line[0];
     	lineWithOpacity[2] = (int) line[1];
     	lineWithOpacity[3] = (int) line[2];
@@ -568,8 +528,7 @@ public class MainGamePanel extends SurfaceView implements
 
 		for (Iterator<int[]> iterator = invalidLines.iterator(); iterator.hasNext();) {
     		int[] line = iterator.next();
-    		line[0] -= 10;
-    		Log.d("Counting", "Opacity: "+ line[0]);
+    		line[0] -= RED_LINE_DECREASE_OPACITY_BY;
 		}
     }
     
