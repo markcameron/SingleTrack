@@ -6,8 +6,6 @@ package com.android.mcameron.singletrack;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.android.mcameron.singletrack.Options.TestSurfaceView;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -40,17 +38,25 @@ import android.widget.TextView;
  * This is the main surface that handles the ontouch events and draws
  * the image to the screen.
  */
+/**
+ * @author markcameron
+ *
+ */
 public class MainGamePanel extends SurfaceView implements
 		SurfaceHolder.Callback {
 
+	// Invalid line options
 	private static final int RED_LINE_DECREASE_OPACITY_BY = 10;
 	private static final int RED_LINE_INITIAL_OPACITY = 250;
 
+	// Scale all parts of the level (lines, dots, etc);
 	private static final int LEVEL_SCALE = 2;
 	
+	// How much to allow pinch to zoom
     private static float MIN_ZOOM = 0.5f;
     private static float MAX_ZOOM = 1f;
 	
+    // Log.d text for this app
 	private static final String TAG = MainGamePanel.class.getSimpleName();
 	
 	private MainThread thread;
@@ -68,18 +74,6 @@ public class MainGamePanel extends SurfaceView implements
 	private Bitmap fBitmap;
 	private Canvas fCanvas;
 	private Bitmap iBitmap;
-	private int width;
-	private int height;
-	private float bmWidth;
-	private float bmHeight;
-	private float saveScale;
-	private float scaleMappingRatio;
-	private float redundantYSpace;
-	private float redundantXSpace;
-	private float origWidth;
-	private float origHeight;
-	private float right;
-	private float bottom;
 	private int screenDensity;
 	private CopyOnWriteArrayList<int[]> invalidLines = new CopyOnWriteArrayList<int[]>();
 	private float mX, mY, mLastTouchX, mLastTouchY;
@@ -89,7 +83,8 @@ public class MainGamePanel extends SurfaceView implements
     private float translateX = 0;
     private float translateY = 0;
     private Context activityContext;
-    
+	private String avgFps;
+	
     private boolean isDrag = false;
     
     private int numberOfMoves;
@@ -103,8 +98,12 @@ public class MainGamePanel extends SurfaceView implements
 	
 	private float[] levelConfig = new float[]{6,6,0,3,1,3,0,3,0,2,1,3,1,2,1,1,1,0,1,1,2,1,2,1,2,0,3,2,3,1};
 	
-	// the fps to be displayed
-	private String avgFps;
+	
+	/**
+	 * Set the average FPS
+	 * 
+	 * @param avgFps The string value to set
+	 */
 	public void setAvgFps(String avgFps) {
 		this.avgFps = avgFps;
 	}
@@ -117,7 +116,6 @@ public class MainGamePanel extends SurfaceView implements
 		paintFPS.setColor(Color.RED);
 		paintFPS.setTextSize(30);
 		
-//		Globals globals = (Globals) getApplicationContext();
         Levels levels = new Levels();
         float[] level = levels.getLevel(Integer.parseInt(Globals.getCurrentLevel()));
         
