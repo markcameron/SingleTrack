@@ -12,7 +12,7 @@ public class AppPreferences {
 	private SharedPreferences.Editor prefsEditor;
 	
 	public AppPreferences(Context context){
-		this.appSharedPrefs = context.getSharedPreferences(APP_PREFERENCES, Activity.MODE_PRIVATE);
+		this.appSharedPrefs = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 		this.prefsEditor = appSharedPrefs.edit();
 	}
 	 

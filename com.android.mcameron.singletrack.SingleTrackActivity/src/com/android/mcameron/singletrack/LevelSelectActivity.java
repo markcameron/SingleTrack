@@ -141,9 +141,10 @@ public class LevelSelectActivity extends Activity {
 	    }
 	}
 	
+	@Override
 	public void onRestart() {
 		super.onRestart();
-		Intent currentIntent = (Intent) getIntent();
+		Intent currentIntent = getIntent();
 		finish();
 		startActivity(currentIntent);
 	}

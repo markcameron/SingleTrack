@@ -21,7 +21,7 @@ public class MainThread extends Thread {
 	private static final String TAG = MainThread.class.getSimpleName();
 	
 	// desired fps
-	private final static int 	MAX_FPS = 60;	
+	private final static int 	MAX_FPS = 2;	
 	// maximum number of frames to be skipped
 	private final static int	MAX_FRAME_SKIPS = 5;	
 	// the frame period
@@ -159,7 +159,7 @@ public class MainThread extends Thread {
 		
 		if (statusIntervalTimer >= lastStatusStore + STAT_INTERVAL) {
 			// calculate the actual frames pers status check interval
-			double actualFps = (double)(frameCountPerStatCycle / (STAT_INTERVAL / 1000));
+			double actualFps = frameCountPerStatCycle / (STAT_INTERVAL / 1000);
 			
 			//stores the latest fps in the array
 			fpsStore[(int) statsCount % FPS_HISTORY_NR] = actualFps;
