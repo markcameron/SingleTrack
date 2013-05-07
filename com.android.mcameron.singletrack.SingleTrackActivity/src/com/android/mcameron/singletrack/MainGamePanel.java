@@ -126,7 +126,7 @@ public class MainGamePanel extends SurfaceView implements
 
 		// Initialize stuff
 		mScaleFactor = 1.0f;
-		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+//		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 		activityContext = context;
 		
 		// Initialize brush to display FPS
@@ -234,7 +234,7 @@ public class MainGamePanel extends SurfaceView implements
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		mScaleDetector.onTouchEvent(event);
+//		mScaleDetector.onTouchEvent(event);
     	
 //		Log.d("Counting", "mX: "+ mX + " | mY: "+ mY +" | mLastTouchX: "+ mLastTouchX +" | mLastTouchY: "+ mLastTouchY +" OffsetX: "+ offsetX +" offsetY: "+ offsetY);
     	final int action = event.getAction();
@@ -274,7 +274,7 @@ public class MainGamePanel extends SurfaceView implements
 	    		final float y1 = event.getY();
 	
 	    		// Only move if the ScaleGestureDetector isn't processing a gesture.
-	    		if (!mScaleDetector.isInProgress()) {
+//	    		if (!mScaleDetector.isInProgress()) {
 	    			final float dx = x1 - mLastTouchX;
 	    			final float dy = y1 - mLastTouchY;
 	
@@ -294,7 +294,7 @@ public class MainGamePanel extends SurfaceView implements
 	    			mX = mY = 0;
 	    			
 	    			rebound();
-	    		}
+//	    		}
 	    		
 	    		// Only say we're dragging if we've moved more then X number
 	    		// of pixels combined to avoid small jerks on touch
@@ -355,7 +355,7 @@ public class MainGamePanel extends SurfaceView implements
 			canvas.setMatrix(matrix);
 //			canvas.translate(translateY, translateY);
 //			Log.d("Counting", "Le Matrix: "+ matrix.toString());
-			canvas.scale(mScaleFactor, mScaleFactor);
+//			canvas.scale(mScaleFactor, mScaleFactor);
 //			canvas.scale(mScaleFactor, mScaleFactor, mScaleDetector.getFocusX(), mScaleDetector.getFocusY());
 			
 			float centerPointWidth = displayWidth / 2;
@@ -368,8 +368,8 @@ public class MainGamePanel extends SurfaceView implements
 			canvas.drawBitmap(middlegroundBitmap, centerPointWidth, centerPointHeight, null);
 			canvas.drawBitmap(foregroundBitmap, centerPointWidth, centerPointHeight, null);
 			
-			canvas.drawRect(offsetX, offsetY, (bitmapWidth + offsetX) * mScaleFactor, (bitmapHeight + offsetY) * mScaleFactor, paintDebug);
-		    Log.d(TAG, "gridB - L: "+ offsetX +" T: "+ offsetY +" R: "+ ((bitmapWidth + offsetX) * mScaleFactor) +" B: "+ ((bitmapHeight + offsetY) * mScaleFactor));
+//			canvas.drawRect(offsetX, offsetY, (bitmapWidth + offsetX) * mScaleFactor, (bitmapHeight + offsetY) * mScaleFactor, paintDebug);
+//		    Log.d(TAG, "gridB - L: "+ offsetX +" T: "+ offsetY +" R: "+ ((bitmapWidth + offsetX) * mScaleFactor) +" B: "+ ((bitmapHeight + offsetY) * mScaleFactor));
 		    
 			// display fps
 			displayFps(canvas, avgFps);
@@ -659,7 +659,7 @@ public class MainGamePanel extends SurfaceView implements
     	paintLine.setStrokeWidth(4*LEVEL_SCALE);
     	paintLine.setPathEffect(new DashPathEffect(new float[] {7,14}, 0));
     	// Bitmap background color to check boundries when moving around screen
-    	canvas.drawColor(Color.CYAN);
+//    	canvas.drawColor(Color.CYAN);
     	canvas.drawLines(lines, paintLine);
     }
     

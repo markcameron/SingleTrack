@@ -53,10 +53,12 @@ public final class R {
         public static final int main_menu=0x7f050003;
         public static final int next_level=0x7f050004;
         public static final int number_of_moves=0x7f050005;
-        public static final int options_music=0x7f050008;
-        public static final int options_sound_effects=0x7f050009;
-        public static final int rectangles=0x7f050007;
-        public static final int squares=0x7f050006;
+        public static final int options_music=0x7f050009;
+        public static final int options_sound_effects=0x7f05000a;
+        public static final int pack_select_rectangles_completed=0x7f050007;
+        public static final int pack_select_squares_completed=0x7f050006;
+        public static final int rectangles=0x7f050008;
+        public static final int squares=0x7f05000b;
     }
     public static final class style {
         public static final int ButtonText=0x7f060004;

@@ -7,7 +7,8 @@
     <string name="main_menu">Main Menu</string>
     <string name="next_level">Next Level</string>
 	<string name="number_of_moves">Number of moves:</string>
-	<string name="squares">Squares\n<small>Completed 5 of 50</small></string>
+	<string name="pack_select_squares_completed">Squares\n<small>Completed %1$d of %2$d</small></string>
+	<string name="pack_select_rectangles_completed">Rectangles\n<small>Completed %1$d of %2$d</small></string>
 	<string name="rectangles">Rectangles</string>
 	<string name="options_music">Music</string>
 	<string name="options_sound_effects">Sounds</string>

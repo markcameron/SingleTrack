@@ -14,9 +14,17 @@ public class PackSelectActivity extends Activity {
 	
 		setContentView(R.layout.packselect);
 		
+		this.initButtons();
+	}
+	
+	private void initButtons() {
 		final Globals globals = (Globals) getApplicationContext();
+
+		Levels levels = new Levels(getApplicationContext());
+		levels.setLevelPack(Globals.PACK_SQUARES);
 		
         Button btnPackSquares = (Button) findViewById(R.id.PackSquares);
+        btnPackSquares.setText(getString(R.string.pack_select_squares_completed, levels.completedCount(), levels.size()));
         btnPackSquares.setOnClickListener(new OnClickListener() {
         	
         	@Override
@@ -28,7 +36,11 @@ public class PackSelectActivity extends Activity {
         	}
         });
         
+//        levels = new Levels();
+		levels.setLevelPack(Globals.PACK_RECTANGLES);
+		
         Button btnPackRectangles = (Button) findViewById(R.id.PackRectangles);
+        btnPackRectangles.setText(getString(R.string.pack_select_rectangles_completed, levels.completedCount(), levels.size()));
         btnPackRectangles.setOnClickListener(new OnClickListener() {
         	
         	@Override
@@ -39,5 +51,10 @@ public class PackSelectActivity extends Activity {
         		startActivity(LevelSelectIntent);
         	}
         });
+	}
+	
+	public void onResume() {
+		super.onResume();
+		this.initButtons();
 	}
 }
