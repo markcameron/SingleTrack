@@ -30,13 +30,21 @@ public class Globals extends Application {
 		  return currentPack;
 	  }
 	  
-	  public String getNextLevel() {
-		  setNextLevel();
-		  return getCurrentLevel();
+	  public static String getNextLevel() {
+		  int currentLevel = Integer.parseInt(Globals.currentLevel);
+		  return Integer.toString(++currentLevel);
 	  }
 	  
-	  public static void setNextLevel() {
+	  public static void incrementLevel() {
 		  int currentLevel = Integer.parseInt(Globals.currentLevel);
 		  setCurrentLevel(Integer.toString(++currentLevel));
+	  }
+	  
+	  public static boolean hasNextLevel() {
+		  String nextLevel = getNextLevel();
+		  
+		  
+		  
+		  return false;
 	  }
 }

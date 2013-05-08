@@ -623,12 +623,12 @@ public class MainGamePanel extends SurfaceView implements
     
     private void setupButtonNextLevel(final Dialog dialog) {
         Button buttonNextLevel = (Button) dialog.findViewById(R.id.btnNextLevel);
+        buttonNextLevel.setEnabled(false);
         buttonNextLevel.setOnClickListener(new OnClickListener() {
         	
         	@Override
 			public void onClick(View v) {
-//        		Globals globals = (Globals) getApplicationContext();
-				Globals.setNextLevel();
+				Globals.incrementLevel();
 				
 				((Activity) activityContext).finish();
 				Context context = getContext(); // from MySurfaceView/Activity
