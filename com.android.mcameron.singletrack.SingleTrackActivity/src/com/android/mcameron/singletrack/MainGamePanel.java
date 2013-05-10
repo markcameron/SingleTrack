@@ -63,6 +63,8 @@ public class MainGamePanel extends SurfaceView implements
 	
 	private Paint paintFPS = new Paint();
 
+	private Sound sound;
+	
 	GameGrid gameGrid;
 	private Matrix matrix;
 	private SurfaceHolder surfaceHolder;
@@ -124,6 +126,9 @@ public class MainGamePanel extends SurfaceView implements
 		// Create the game loop thread
 		thread = new MainThread(getHolder(), this);
 
+		// Initialize sound
+		sound = new Sound(context);
+		
 		// Initialize stuff
 		mScaleFactor = 1.0f;
 //		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
@@ -512,6 +517,8 @@ public class MainGamePanel extends SurfaceView implements
     	gameGrid.addLine(line);
     	paint.setColor(Color.rgb(92,172,238));	        
         middlegroundCanvas.drawLines(line, paint);
+        
+        sound.play(Globals.SOUND_TOUCH_DRAW, getContext());
     }
     
     private void drawLinesInvalid() {

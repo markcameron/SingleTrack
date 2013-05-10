@@ -19,22 +19,22 @@ public final class R {
         public static final int icon=0x7f020005;
     }
     public static final class id {
-        public static final int Credits=0x7f07000d;
-        public static final int Help=0x7f07000b;
-        public static final int LinearLayout02=0x7f070006;
-        public static final int LinearLayoutLevelCompleteDialog=0x7f070002;
-        public static final int Options=0x7f07000c;
-        public static final int PackRectangles=0x7f07000f;
-        public static final int PackSquares=0x7f07000e;
-        public static final int StartGame=0x7f07000a;
-        public static final int TextView01=0x7f070001;
-        public static final int btnBackToLevelSelect=0x7f070007;
-        public static final int btnNextLevel=0x7f070008;
-        public static final int grid=0x7f070009;
-        public static final int tableRow1=0x7f070003;
-        public static final int textViewTableNumberOfMovesText=0x7f070004;
-        public static final int textViewTableNumberOfMovesValue=0x7f070005;
-        public static final int widget32=0x7f070000;
+        public static final int Credits=0x7f08000d;
+        public static final int Help=0x7f08000b;
+        public static final int LinearLayout02=0x7f080006;
+        public static final int LinearLayoutLevelCompleteDialog=0x7f080002;
+        public static final int Options=0x7f08000c;
+        public static final int PackRectangles=0x7f08000f;
+        public static final int PackSquares=0x7f08000e;
+        public static final int StartGame=0x7f08000a;
+        public static final int TextView01=0x7f080001;
+        public static final int btnBackToLevelSelect=0x7f080007;
+        public static final int btnNextLevel=0x7f080008;
+        public static final int grid=0x7f080009;
+        public static final int tableRow1=0x7f080003;
+        public static final int textViewTableNumberOfMovesText=0x7f080004;
+        public static final int textViewTableNumberOfMovesValue=0x7f080005;
+        public static final int widget32=0x7f080000;
     }
     public static final class layout {
         public static final int credits=0x7f030000;
@@ -46,28 +46,31 @@ public final class R {
         public static final int packselect=0x7f030006;
         public static final int startgame=0x7f030007;
     }
+    public static final class raw {
+        public static final int thip=0x7f050000;
+    }
     public static final class string {
-        public static final int app_name=0x7f050001;
-        public static final int hello=0x7f050000;
-        public static final int levelcomplete=0x7f050002;
-        public static final int main_menu=0x7f050003;
-        public static final int next_level=0x7f050004;
-        public static final int number_of_moves=0x7f050005;
-        public static final int options_music=0x7f050009;
-        public static final int options_sound_effects=0x7f05000a;
-        public static final int pack_select_rectangles_completed=0x7f050007;
-        public static final int pack_select_squares_completed=0x7f050006;
-        public static final int rectangles=0x7f050008;
-        public static final int squares=0x7f05000b;
+        public static final int app_name=0x7f060001;
+        public static final int hello=0x7f060000;
+        public static final int levelcomplete=0x7f060002;
+        public static final int main_menu=0x7f060003;
+        public static final int next_level=0x7f060004;
+        public static final int number_of_moves=0x7f060005;
+        public static final int options_music=0x7f060009;
+        public static final int options_sound_effects=0x7f06000a;
+        public static final int pack_select_rectangles_completed=0x7f060007;
+        public static final int pack_select_squares_completed=0x7f060006;
+        public static final int rectangles=0x7f060008;
+        public static final int squares=0x7f06000b;
     }
     public static final class style {
-        public static final int ButtonText=0x7f060004;
-        public static final int CustomDialogTitle=0x7f060002;
-        public static final int DialogTableText=0x7f060003;
+        public static final int ButtonText=0x7f070004;
+        public static final int CustomDialogTitle=0x7f070002;
+        public static final int DialogTableText=0x7f070003;
         /**  A theme for a custom dialog appearance. 
          */
-        public static final int Theme_CustomDialog=0x7f060000;
-        public static final int Theme_CustomDialogHolo=0x7f060001;
+        public static final int Theme_CustomDialog=0x7f070000;
+        public static final int Theme_CustomDialogHolo=0x7f070001;
     }
     public static final class xml {
         public static final int preferences=0x7f040000;

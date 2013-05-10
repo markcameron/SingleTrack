@@ -50,7 +50,7 @@ public class Levels {
 		
 		int i;
 		int count = 0;
-		for (i = 1; i < this.size() ; i++) {
+		for (i = 1; i <= this.size() ; i++) {
 			if (appPrefs.getLevelState(levelPack, String.format("%02d", i)) == Globals.LEVEL_SOLVED) {
 				count++;
 			}			
