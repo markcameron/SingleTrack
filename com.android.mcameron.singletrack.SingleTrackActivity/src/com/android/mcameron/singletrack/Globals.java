@@ -12,6 +12,8 @@ public class Globals extends Application {
 	  public static final byte LEVEL_SOLVED = 2;
 	  
 	  public static final Integer SOUND_TOUCH_DRAW = 1;
+	  public static final Integer SOUND_TOUCH_UNDRAW = 2;
+	  public static final Integer SOUND_TOUCH_WRONG = 3;
 
 	  public static final String PACK_SQUARES = "01";
 	  public static final String PACK_RECTANGLES = "02";

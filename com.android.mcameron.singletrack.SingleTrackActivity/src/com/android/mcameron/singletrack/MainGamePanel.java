@@ -545,6 +545,8 @@ public class MainGamePanel extends SurfaceView implements
     	lineWithOpacity[3] = (int) line[2];
     	lineWithOpacity[4] = (int) line[3];
     	invalidLines.add(lineWithOpacity);
+    	
+    	sound.play(Globals.SOUND_TOUCH_WRONG, getContext());
     }
     
     private void decreaseLineOpacity() {
@@ -569,6 +571,8 @@ public class MainGamePanel extends SurfaceView implements
 		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         middlegroundCanvas.drawLines(line, paint);
         paint.setXfermode(originalXfermode);
+        
+        sound.play(Globals.SOUND_TOUCH_UNDRAW, getContext());
     }
     
     private void checkIfLevelIsSolved() {

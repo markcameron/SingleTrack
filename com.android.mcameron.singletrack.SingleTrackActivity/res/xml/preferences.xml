@@ -10,7 +10,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		<CheckBoxPreference
 			android:key="game_sounds"
 			android:title="@string/options_sound_effects"
-			android:summary="Enanle the sound effects"
+			android:summary="Enable the sound effects"
 			android:defaultValue="true" 
 		/>
 	</PreferenceCategory>
