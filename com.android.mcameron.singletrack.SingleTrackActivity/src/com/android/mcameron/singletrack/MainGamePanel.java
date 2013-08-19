@@ -77,6 +77,17 @@ public class MainGamePanel extends SurfaceView implements
 	private Canvas foregroundCanvas;
 	private Paint paint;
 	private Paint paintDebug;
+	
+	private final int COLOR_START_FINISH_POINT = Color.rgb(64, 134, 170);
+	private final int COLOR_DASHED_GRID = Color.rgb(170, 182, 162);
+	private final int COLOR_FIXED_LINE = Color.rgb(102, 102, 102);
+	private final int COLOR_POINT_GRID = Color.rgb(102, 102, 102);
+	private final int COLOR_INVALID_LINE = Color.RED;
+	private final int COLOR_DRAWN_LINE = Color.rgb(145, 195, 220);
+	private final int COLOR_BACKGROUND = Color.rgb(40,40,40);
+	private final int COLOR_FPS_TEXT = Color.RED;
+	private final int COLOR_DEBUG = Color.MAGENTA;
+	
 	private ScaleGestureDetector mScaleDetector;
 	private float mScaleFactor;
 	private int screenDensity;
@@ -135,7 +146,7 @@ public class MainGamePanel extends SurfaceView implements
 		activityContext = context;
 		
 		// Initialize brush to display FPS
-		paintFPS.setColor(Color.RED);
+		paintFPS.setColor(COLOR_FPS_TEXT);
 		paintFPS.setTextSize(30);
 		
         // Get selected level, and set levelConfig
@@ -186,18 +197,18 @@ public class MainGamePanel extends SurfaceView implements
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
         paint.setDither(true);
-        paint.setColor(Color.rgb(0,0,0));
+        paint.setColor(COLOR_BACKGROUND);
         paint.setStrokeWidth(6*LEVEL_SCALE);
         
         // Setup debug brush
         paintDebug = new Paint();
-        paintDebug.setColor(Color.MAGENTA);
+        paintDebug.setColor(COLOR_DEBUG);
         paintDebug.setStrokeWidth(2);
         
         // Draw all initial lines and points to the respective canvases
         drawDashedGrid(backgroundCanvas, gameGrid.getGuideLinesArray());
-        drawPoints(gameGrid.getmPts(), paint.getStrokeWidth(), foregroundCanvas, paint);
         drawInitialLines(foregroundCanvas, gameGrid.getFixedLinesArray());
+        drawPoints(gameGrid.getmPts(), paint.getStrokeWidth(), foregroundCanvas);
         drawStartFinish(foregroundCanvas, gameGrid.getStartPoint(), gameGrid.getEndPoint());
 		
 		// make the GamePanel focusable so it can handle events
@@ -515,14 +526,14 @@ public class MainGamePanel extends SurfaceView implements
     
     private void drawLineValid(float[] line) {
     	gameGrid.addLine(line);
-    	paint.setColor(Color.rgb(92,172,238));	        
+    	paint.setColor(COLOR_DRAWN_LINE);	        
         middlegroundCanvas.drawLines(line, paint);
         
         sound.play(Globals.SOUND_TOUCH_DRAW, getContext());
     }
     
     private void drawLinesInvalid() {
-		paint.setColor(Color.RED);
+		paint.setColor(COLOR_INVALID_LINE);
 		
 		for (Iterator<int[]> iterator = invalidLines.iterator(); iterator.hasNext();) {
     		int[] invalidLine = iterator.next();	
@@ -665,19 +676,25 @@ public class MainGamePanel extends SurfaceView implements
     
     public void drawDashedGrid(Canvas canvas, float[] lines) {
     	Paint paintLine = new Paint();
-    	paintLine.setColor(Color.rgb(200,200,200));
+    	paintLine.setColor(COLOR_DASHED_GRID);
     	paintLine.setStyle(Paint.Style.FILL_AND_STROKE);
     	paintLine.setStrokeWidth(4*LEVEL_SCALE);
     	paintLine.setPathEffect(new DashPathEffect(new float[] {7,14}, 0));
     	// Bitmap background color to check boundries when moving around screen
-//    	canvas.drawColor(Color.CYAN);
+    	canvas.drawColor(COLOR_BACKGROUND);
     	canvas.drawLines(lines, paintLine);
     }
     
-	public void drawPoints(float[] pts, float radius, Canvas canvas, Paint paint) {
-    	for (int i = 0; i < pts.length-1; i++) {
+	public void drawPoints(float[] pts, float radius, Canvas canvas) {
+		paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+        paint.setColor(COLOR_POINT_GRID);
+        paint.setStrokeWidth(6*LEVEL_SCALE);
+        
+		for (int i = 0; i < pts.length-1; i++) {
 			if (i % 2 == 0) {
-				//Log.d("Counting", "circles!!!");
 				canvas.drawCircle(pts[i], pts[i+1], radius, paint);
 			}
 		}
@@ -686,16 +703,16 @@ public class MainGamePanel extends SurfaceView implements
 	public void drawStartFinish(Canvas canvas, float[] start, float[] finish) {
 		Paint paintPoint = new Paint();
 		
-		paintPoint.setColor(Color.rgb(163,47,163));
+		paintPoint.setColor(COLOR_START_FINISH_POINT);
 		canvas.drawCircle(start[0], start[1], 9*LEVEL_SCALE, paintPoint);
 		
-		paintPoint.setColor(Color.rgb(162,47,163));
+		paintPoint.setColor(COLOR_START_FINISH_POINT);
 		canvas.drawCircle(finish[0], finish[1], 9*LEVEL_SCALE, paintPoint);
 	}
 	
 	public void drawInitialLines(Canvas canvas, float[] lines) {
 		Paint paintPoint = new Paint();
-		paintPoint.setColor(Color.BLACK);
+		paintPoint.setColor(COLOR_FIXED_LINE);
 		paintPoint.setStrokeWidth(6*LEVEL_SCALE);
 		canvas.drawLines(lines, paintPoint);
 	}
