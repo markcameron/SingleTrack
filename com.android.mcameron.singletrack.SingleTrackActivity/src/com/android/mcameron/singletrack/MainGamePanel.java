@@ -78,15 +78,17 @@ public class MainGamePanel extends SurfaceView implements
 	private Paint paint;
 	private Paint paintDebug;
 	
-	private final int COLOR_START_FINISH_POINT = Color.rgb(64, 134, 170);
-	private final int COLOR_DASHED_GRID = Color.rgb(170, 182, 162);
-	private final int COLOR_FIXED_LINE = Color.rgb(102, 102, 102);
-	private final int COLOR_POINT_GRID = Color.rgb(102, 102, 102);
-	private final int COLOR_INVALID_LINE = Color.RED;
-	private final int COLOR_DRAWN_LINE = Color.rgb(145, 195, 220);
-	private final int COLOR_BACKGROUND = Color.rgb(40,40,40);
-	private final int COLOR_FPS_TEXT = Color.RED;
+	private final int COLOR_START_FINISH_POINT = Color.rgb(65, 146, 75);
+	private final int COLOR_DASHED_GRID = Color.rgb(60, 60, 60);
+	private final int COLOR_FIXED_LINE = Color.rgb(215,215,215);
+	private final int COLOR_POINT_GRID = Color.rgb(152, 152, 152);
+	private final int COLOR_INVALID_LINE = Color.rgb(189, 32, 49);
+	private final int COLOR_DRAWN_LINE = Color.rgb(40, 122, 169);
+	private final int COLOR_BACKGROUND = Color.rgb(20,20,20);
+	private final int COLOR_FPS_TEXT = Color.WHITE;
 	private final int COLOR_DEBUG = Color.MAGENTA;
+	
+	private final int STROKE_WIDTH = 18;
 	
 	private ScaleGestureDetector mScaleDetector;
 	private float mScaleFactor;
@@ -147,7 +149,7 @@ public class MainGamePanel extends SurfaceView implements
 		
 		// Initialize brush to display FPS
 		paintFPS.setColor(COLOR_FPS_TEXT);
-		paintFPS.setTextSize(30);
+		paintFPS.setTextSize(40);
 		
         // Get selected level, and set levelConfig
         Levels levels = new Levels();
@@ -198,7 +200,7 @@ public class MainGamePanel extends SurfaceView implements
         paint.setFilterBitmap(true);
         paint.setDither(true);
         paint.setColor(COLOR_BACKGROUND);
-        paint.setStrokeWidth(6*LEVEL_SCALE);
+        paint.setStrokeWidth(STROKE_WIDTH);
         
         // Setup debug brush
         paintDebug = new Paint();
@@ -367,7 +369,7 @@ public class MainGamePanel extends SurfaceView implements
 	public void render(Canvas canvas) {
 //        Log.d("Counting", "Canvas w "+ canvas.getWidth() +" h "+ canvas.getHeight() +" density "+ canvas.getDensity() );
 		if (canvas != null) {
-			canvas.drawRGB(255, 255, 255);
+			canvas.drawColor(COLOR_BACKGROUND);
 			canvas.setMatrix(matrix);
 //			canvas.translate(translateY, translateY);
 //			Log.d("Counting", "Le Matrix: "+ matrix.toString());
@@ -678,10 +680,10 @@ public class MainGamePanel extends SurfaceView implements
     	Paint paintLine = new Paint();
     	paintLine.setColor(COLOR_DASHED_GRID);
     	paintLine.setStyle(Paint.Style.FILL_AND_STROKE);
-    	paintLine.setStrokeWidth(4*LEVEL_SCALE);
-    	paintLine.setPathEffect(new DashPathEffect(new float[] {7,14}, 0));
+    	paintLine.setStrokeWidth(STROKE_WIDTH);
+    	paintLine.setPathEffect(new DashPathEffect(new float[] {STROKE_WIDTH, STROKE_WIDTH*2}, 0));
     	// Bitmap background color to check boundries when moving around screen
-    	canvas.drawColor(COLOR_BACKGROUND);
+    	//canvas.drawColor(COLOR_BACKGROUND);
     	canvas.drawLines(lines, paintLine);
     }
     
@@ -691,7 +693,7 @@ public class MainGamePanel extends SurfaceView implements
         paint.setFilterBitmap(true);
         paint.setDither(true);
         paint.setColor(COLOR_POINT_GRID);
-        paint.setStrokeWidth(6*LEVEL_SCALE);
+        paint.setStrokeWidth(STROKE_WIDTH+2);
         
 		for (int i = 0; i < pts.length-1; i++) {
 			if (i % 2 == 0) {
@@ -704,16 +706,16 @@ public class MainGamePanel extends SurfaceView implements
 		Paint paintPoint = new Paint();
 		
 		paintPoint.setColor(COLOR_START_FINISH_POINT);
-		canvas.drawCircle(start[0], start[1], 9*LEVEL_SCALE, paintPoint);
+		canvas.drawCircle(start[0], start[1], 9+STROKE_WIDTH, paintPoint);
 		
 		paintPoint.setColor(COLOR_START_FINISH_POINT);
-		canvas.drawCircle(finish[0], finish[1], 9*LEVEL_SCALE, paintPoint);
+		canvas.drawCircle(finish[0], finish[1], 9+STROKE_WIDTH, paintPoint);
 	}
 	
 	public void drawInitialLines(Canvas canvas, float[] lines) {
 		Paint paintPoint = new Paint();
 		paintPoint.setColor(COLOR_FIXED_LINE);
-		paintPoint.setStrokeWidth(6*LEVEL_SCALE);
+		paintPoint.setStrokeWidth(STROKE_WIDTH);
 		canvas.drawLines(lines, paintPoint);
 	}
 	
